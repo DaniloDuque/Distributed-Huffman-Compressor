@@ -49,4 +49,3 @@ node pop(priority_queue *pq) {
 }
 
 #endif
-
