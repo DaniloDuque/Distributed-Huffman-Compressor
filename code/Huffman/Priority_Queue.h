@@ -12,37 +12,32 @@ void initPriorityQueue(priority_queue* pq){
     pq->size=0;
 }
 
-void swap(node *a, node *b){
-    a^=b; 
-    b^=a;
-    a^=b;
+void swap(node a, node b) {
+    node t = a;
+    a = b;
+    b = t;
 }
 
-void push(priority_queue * pq, node *a){
-    node &tree = pq->tree;
-    int &sz = pq->size;
-    tree[sz]=a;
-    for(int i = sz; i; i>>=1){
-        if(tree[i] >= tree[i>>1]) return;
-        swap(tree[i>>1], tree[i]);
-    }sz++;
+void push(priority_queue * pq, node a){
+    pq->tree[pq->size]=a;
+    for(int i = pq->size; i; i>>=1){
+        if(pq->tree[i].freq >= pq->tree[i>>1].freq) return;
+        swap(pq->tree[i>>1], pq->tree[i]);
+    }pq->size++;
 }
 
-node *pop(priority_queue *pq) {
-    if (pq->size == 0) return NULL;  
-    node *min = pq->tree[1]; 
+node pop(priority_queue *pq) {
+    node min = pq->tree[1]; 
     pq->tree[1] = pq->tree[pq->size];  
     pq->size--;  
     int i = 1;
-    while (i * 2 <= pq->size) {
-        int left = i * 2;
-        int right = left + 1;
-        int smallest = i;
-        if (*pq->tree[left] < *pq->tree[smallest]) smallest = left;
-        if (right <= pq->size && *pq->tree[right] < *pq->tree[smallest]) smallest = right;
-        if (smallest == i) break;  
-        swap(&pq->tree[i], &pq->tree[smallest]);
-        i = smallest;  
+    while (2*i <= pq->size) {
+        int lft = i<<1, rght = lft+1, smll = i;
+        if(pq->tree[lft].freq < pq->tree[smll].freq) smll = lft;
+        if(rght <= pq->size && pq->tree[rght].freq < pq->tree[smll].freq) smll = rght;
+        if(smll == i) break;  
+        swap(pq->tree[i], pq->tree[smll]);
+        i = smll;  
     }return min;  
 }
 
