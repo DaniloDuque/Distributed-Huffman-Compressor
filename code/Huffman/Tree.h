@@ -1,32 +1,61 @@
 #ifndef TREE_HEADER
 #define TREE_HEADER
+#include "Node.h"
+#include "Priority_Queue.h"
+#include <stdbool.h>
 
-#include <stdlib.h>
-#define TREE_HEADER
-#define uchar unsigned char
+#define SET(msk, i) ((msk)|(1<<(i)))
+#define TEST(msk, i) ((msk)&(1<<(i)))
 
-typedef struct node {
-    int freq;
-    uchar data;
-    struct node *lft, *rght;
-} node;
-
-node* createNode(int freq, uchar data) {
-    node* newNode = (node*)malloc(sizeof(node));
-    newNode->freq = freq;
-    newNode->data = data;
-    newNode->lft = NULL;
-    newNode->rght = NULL;
-    return newNode;
+node* makeTree(priority_queue* pq){
+    while(pq->size > 1){
+        node* n1 = pop(pq);
+        node* n2 = pop(pq);
+        push(pq, joinTrees(n1, n2));
+    }node* root = pop(pq);
+    return root;
 }
 
-node* joinTrees(node* l, node* r) {
-    node* newNode = (node*)malloc(sizeof(node));
-    newNode->freq = l->freq + r->freq;
-    newNode->data = '\0';  
-    newNode->lft = l;
-    newNode->rght = r;
-    return newNode;
+void displayTree(node* root, char* prefix, bool islft) {
+    if (root == NULL) return;
+    printf("%s", prefix);
+    printf("%s", (islft ? "├──" : "└──"));
+    printf("%c (%d)\n", root->data, root->freq);
+    char newPrefix[256];
+    snprintf(newPrefix, sizeof(newPrefix), "%s%s", prefix, (islft ? "│   " : "    "));
+    displayTree(root->lft, newPrefix, true);
+    displayTree(root->rght, newPrefix, false);
 }
 
-#endif
+typedef struct {
+    int len, msk;
+} route;
+
+void displayRoute(route* r){
+    printf("length: %d ", r->len);
+    for(int i = 0; i<r->len; ++i) printf("%u", (bool)TEST(r->msk, i));
+    puts("");
+}
+
+route* newRoute(int len, int msk){
+    route* r = (route*)malloc(sizeof(route));
+    r->len = len, r->msk = msk;
+    return r;
+}
+
+void RecRoutes(node* root, int lvl, route r, route** routes) {
+    if (!root) return;
+    if (!root->lft && !root->rght) {routes[root->data] = newRoute(r.len, r.msk); return;}
+    route lftRoute = {lvl+1, r.msk}, rghtRoute = {lvl+1, SET(r.msk, lvl)};  
+    RecRoutes(root->lft, lvl+1, lftRoute, routes);  
+    RecRoutes(root->rght, lvl+1, rghtRoute, routes);  
+}
+
+route** makeRoutes(node* root) {
+    route** routes = (route**)calloc(256, sizeof(route*));  
+    route init = {0, 0};  
+    RecRoutes(root, 0, init, routes);
+    return routes;
+}
+
+#endif 

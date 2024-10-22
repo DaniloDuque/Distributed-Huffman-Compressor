@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "priority_queue.h"
+#include "Tree.h"
 
 int main() {
 
@@ -15,23 +15,26 @@ int main() {
     node* n5 = createNode(7, 'e');
 
     // Push nodes into the priority queue
-    push(&pq, *n1);
+    push(&pq, n1);
     printf("%d\n", pq.size);  // Print the size of the queue after each push
-    push(&pq, *n2);
+    push(&pq, n2);
     printf("%d\n", pq.size);
-    push(&pq, *n3);
+    push(&pq, n3);
     printf("%d\n", pq.size);
-    push(&pq, *n4);
+    push(&pq, n4);
     printf("%d\n", pq.size);
-    push(&pq, *n5);
+    push(&pq, n5);
     printf("%d\n", pq.size);
 
-    // Pop nodes from the priority queue and display their frequencies and data
-    printf("Priority order (lowest frequency first):\n");
-    while (pq.size > 0) {
-        node minNode = pop(&pq);
-        printf("Node with frequency: %d, data: %c\n", minNode.freq, minNode.data);
-    }
+    node* tree = makeTree(&pq);
+    displayTree(tree, "", false);
+
+    //routes[i] contains the route for the i'th byte
+    // for example route['a'] could be: {5, 10110}
+    route** routes = makeRoutes(tree);
+    for(int i = 0; i<MAX; ++i)
+        if(routes[i])
+            displayRoute(routes[i]);
 
     // Free allocated memory for nodes
     free(n1);
