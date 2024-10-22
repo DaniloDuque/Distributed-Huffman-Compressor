@@ -1,4 +1,5 @@
 #ifndef TREE_HEADER
+#define TREE_HEADER
 
 #include <stdlib.h>
 #define TREE_HEADER
@@ -19,7 +20,7 @@ node* createNode(int freq, uchar data) {
     return newNode;
 }
 
-node* createInternalNode(node* l, node* r) {
+node* joinTrees(node* l, node* r) {
     node* newNode = (node*)malloc(sizeof(node));
     newNode->freq = l->freq + r->freq;
     newNode->data = '\0';  
