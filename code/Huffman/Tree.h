@@ -32,7 +32,7 @@ typedef struct {
 } route;
 
 void displayRoute(route* r){
-    printf("length: %d ", r->len);
+    printf("Length: %d  Route: ", r->len);
     for(int i = 0; i<r->len; ++i) printf("%u", (bool)TEST(r->msk, i));
     puts("");
 }
