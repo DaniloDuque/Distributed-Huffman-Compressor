@@ -31,8 +31,8 @@ typedef struct {
     int len, msk;
 } route;
 
-void displayRoute(route* r){
-    printf("Length: %d  Route: ", r->len);
+void displayRoute(route* r, uchar c){
+    printf("Character: %c  Length: %d  Route: ", c, r->len);
     for(int i = 0; i<r->len; ++i) printf("%u", (bool)TEST(r->msk, i));
     puts("");
 }

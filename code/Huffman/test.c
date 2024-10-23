@@ -24,7 +24,7 @@ int main() {
     route** routes = makeRoutes(tree);
     for(int i = 0; i<MAX; ++i)
         if(routes[i])
-            displayRoute(routes[i]);
+            displayRoute(routes[i], i);
 
     return 0;
 }
