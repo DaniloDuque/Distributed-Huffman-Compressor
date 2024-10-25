@@ -1,7 +1,4 @@
-
-
-
-SRC = run.c
+SRC = ServerListener.c
 
 EXEC = server
 

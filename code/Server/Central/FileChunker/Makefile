@@ -2,7 +2,7 @@
 CC = gcc
 
 # Compilation flags
-CFLAGS = -Wall -Wextra -std=c99
+CFLAGS = -Wall -Wextra -std=c99 -pthread
 
 # Source file
 SRC = FileChunker.c
