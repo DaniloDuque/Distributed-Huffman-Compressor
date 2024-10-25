@@ -1,22 +1,28 @@
-# Compiler to use
-CC = gcc
 
-# Compilation flags
-CFLAGS = -Wall -pthread
 
-# Name of the output executable
-OUTPUT = a.out
 
-# Source file
 SRC = run.c
 
-# Default rule (build everything)
-all: $(OUTPUT)
+EXEC = server
 
-# Rule to compile the executable
-$(OUTPUT): $(SRC)
-	$(CC) $(CFLAGS) $(SRC) -o $(OUTPUT)
+CC = gcc
+CFLAGS = -Wall -Wextra
 
-# Clean up generated files
+all: $(EXEC)
+
+$(EXEC): $(SRC)
+	$(CC) $(CFLAGS) -o $(EXEC) $(SRC)
+
+run: $(EXEC)
+	./$(EXEC)
+
 clean:
-	rm -f $(OUTPUT)
+	rm -f $(EXEC)
+
+help:
+	@echo "Comandos disponibles:"
+	@echo "  make        - Compila el servidor"
+	@echo "  make run    - Compila y ejecuta el servidor"
+	@echo "  make clean  - Elimina el ejecutable"
+	@echo "  make help   - Muestra esta ayuda"
+
