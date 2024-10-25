@@ -1,4 +1,4 @@
-#include "util.h"
+#include "../util.h"
 
 void handle_client(int client_socket) {
     char buffer[BUF_SIZE];
