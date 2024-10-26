@@ -10,12 +10,14 @@ bool calc_frecuency(FILE* file, int socket){
         for(int i=0; i<BUFFER_SIZE; i++) freq[buffer[i]]++;
     }
 
-    if(send(socket, MAX_SIZE, sizeof(MAX_SIZE), 0) == -1) {
+    ll ptr = MAX_SIZE;
+    
+    if(send(socket, &ptr, sizeof(ptr), 0) == -1) {
         perror("Error while sending chunk size");
         return false;
     }
 
-    if(send(socket, freq, MAX_SIZE, 0) < 0){
+    if(send(socket, freq, ptr, 0) < 0){
         perror("Error enviando la frecuencia");
         return false;
     }

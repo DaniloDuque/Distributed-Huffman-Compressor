@@ -5,7 +5,7 @@ FILE* receive_file(int socket) {
     FILE* file = fopen(OUTPUT_FILE, "w+b");
     if (file == NULL) {
         printf("Error creating output file\n");
-        return;
+        return NULL;
     }
 
     ll file_size;
