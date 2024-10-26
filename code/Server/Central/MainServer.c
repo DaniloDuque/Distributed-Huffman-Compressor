@@ -47,7 +47,7 @@ int main() {
         cont++;
     }
 
-    if(splitFile(createSplitDTO(FILE_PATH,info,n))){
+    if(splitFile(createSplitDTO(FILE_PATH,info,n))==false){
         perror("Error al dividir el archivo desde Main");
         return 1;
     }

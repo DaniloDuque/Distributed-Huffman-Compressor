@@ -113,8 +113,10 @@ bool splitFile(splitFileDTO * sp) {
     int * exitCode;
     bool flag = true;
     for(int i=0; i<sp->numServers; i++){
-        if(join(threads[i],(void **)&exitCode) < 0 || exitCode != 0) 
+        if(join(threads[i],(void **)&exitCode) < 0 || exitCode != 0){ 
             flag = false;
+            fprintf(stderr, "Hilo %d peto\n",i);
+        }
     }
     return flag;
 }

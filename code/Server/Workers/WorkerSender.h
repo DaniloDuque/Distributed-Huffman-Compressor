@@ -2,7 +2,7 @@
 
 FILE* receive_file(int socket) {
     char buffer[BUFFER_SIZE];
-    FILE* file = fopen(OUTPUT_FILE, "w+b");
+    FILE* file = fopen(OUTPUT_FILE, "wb");
     if (file == NULL) {
         printf("Error creating output file\n");
         return NULL;
