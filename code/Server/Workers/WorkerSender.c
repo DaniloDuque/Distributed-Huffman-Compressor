@@ -1,7 +1,7 @@
 #include "util.h"
 
 #define IP "6.tcp.ngrok.io"
-#define NGROK_PORT 15548 // Puerto proporcionado por ngrok
+#define NGROK_PORT 15548 
 
 void receive_file(int socket) {
     char buffer[BUFFER_SIZE];
@@ -22,7 +22,8 @@ void receive_file(int socket) {
            (bytes_received = recv(socket, buffer, BUFFER_SIZE, 0)) > 0) {
         fwrite(buffer, 1, bytes_received, file);
         total_received += bytes_received;
-        printf("Progress: %.2f%%\n", (float)total_received / file_size * 100);
+        printf("Progress: %d\n", total_received / file_size * 100);
+        system("clear");
     }
 
     fclose(file);
