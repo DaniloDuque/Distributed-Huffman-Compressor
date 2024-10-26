@@ -22,7 +22,7 @@ void receive_file(int socket) {
            (bytes_received = recv(socket, buffer, BUFFER_SIZE, 0)) > 0) {
         fwrite(buffer, 1, bytes_received, file);
         total_received += bytes_received;
-        printf("Progress: %d\n", total_received / file_size * 100);
+        printf("Progress: %lld\n", total_received / file_size * 100);
         system("clear");
     }
 
