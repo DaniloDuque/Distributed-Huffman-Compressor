@@ -15,7 +15,7 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 
-#define PORT 11318
+#define PORT 8585
 #define BUFFER_SIZE 1024 
 #define FILE_PATH "./resources/index.html"
 #define SERVER_PUBLIC_IP "prueba.loca.lt"
@@ -60,6 +60,12 @@ const char* header_template =
     "Connection: close\r\n"
     "\r\n";
 
+
+typedef struct {
+    int socket;
+    struct sockaddr_in client_addr;
+    socklen_t client_len;
+} client_info;
 
 
 #endif 
