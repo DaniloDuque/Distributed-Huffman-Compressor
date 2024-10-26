@@ -1,6 +1,7 @@
 #ifndef FILE_CHUNKER
 #define FILE_CHUNKER
 #include "../util.h"
+#include "../ServerListener.h"
 
 #define RESOURCE_PATH "../resources/test.txt"
 
@@ -25,87 +26,97 @@ params* createParams(ll i, ll j, char* path, client_info* client_info) {
 void* filePart(void* arg) {
     params* p = (params*)arg;
     FILE* file;
+    int * exitCode = (int *) malloc(sizeof(int));
     file = fopen(p->path, "rb");
     if(file == NULL) {
         perror("Error while opening file");
+        *exitCode = -1;
+        exit_t(exitCode);
         return NULL;
     }
 
-    // Posicionamos el puntero del archivo
     fseek(file, p->basePosition, SEEK_SET);
 
-    // Enviamos primero el tamaño total del chunk
     if(send(p->client->socket, &p->chunkSize, sizeof(p->chunkSize), 0) == -1) {
         perror("Error while sending chunk size");
+        *exitCode = -1;
+        exit_t(exitCode);
         return NULL;
     }
 
-    // Buffer para leer el archivo por partes
     unsigned char buffer[BUFFER_SIZE];
     ll remainingBytes = p->chunkSize;
     ll totalSent = 0;
 
-    // Leemos y enviamos el archivo en chunks
     while(remainingBytes > 0) {
         size_t bytesToRead = (remainingBytes < BUFFER_SIZE) ? remainingBytes : BUFFER_SIZE;
         size_t bytesRead = fread(buffer, 1, bytesToRead, file);
         
         if(bytesRead <= 0) {
-            if(feof(file)) {
-                break;  // Fin del archivo
-            }
-            perror("Error while reading file");
+            if(feof(file)) break;  
+            perror("Error sending file");
+            *exitCode = -1;
+            exit_t(exitCode);
             return NULL;
         }
 
-        // Enviamos el buffer
         ssize_t bytesSent = send(p->client->socket, buffer, bytesRead, 0);
         if(bytesSent == -1) {
-            perror("Error while sending buffer");
+            perror("Error while sending file");
+            *exitCode = -1;
+            exit_t(exitCode);
             return NULL;
         }
 
         totalSent += bytesSent;
         remainingBytes -= bytesSent;
     }
-
     if(totalSent != p->chunkSize) {
-        fprintf(stderr, "Warning: Sent %lld bytes of %lld expected\n", totalSent, p->chunkSize);
+        fprintf(stderr, "Error: Sent %lld bytes of %lld expected\n", totalSent, p->chunkSize);
+        *exitCode = -1;
+        exit_t(exitCode);
+        return NULL;
     }
-
     fclose(file);
-
-    close(p->client->socket);
+    if(receiveAndUpdateTable(p->client->socket)==false){
+        perror("Error recieving the table of frequencies");
+        exit_t(exitCode);
+        return NULL;
+    }
+    *exitCode = 0;
+    exit_t(exitCode);
     return NULL;
 }
 
-void* splitFile(void* spd) {
-    splitFileDTO *sp = (splitFileDTO*)spd;
+bool splitFile(splitFileDTO * sp) {
     FILE* file;
     file = fopen(sp->path, "rb");
     if(file == NULL) {
         perror("Error while opening file");
-        return NULL;
+        return false;
     }
     fseek(file, 0, SEEK_END);
     ll size = ftell(file), chunkSize = (size / sp->numServers);
     fclose(file);
-    
     thread threads[sp->numServers];
     ll residual = size % sp->numServers, basePos = 0;
-    
     for(ll i = 0; i < sp->numServers; i++) {
         params* param = createParams(basePos, 
             chunkSize + (residual > 0), sp->path, &sp->client[i]);
         basePos += chunkSize + (residual > 0);
         if(create(&threads[i], NULL, &filePart, param) != 0) {
             perror("Error creating the thread in splitFile");
-            return NULL;
+            return false;
         }
-        detach(threads[i]);
         residual--;
     }
-    return NULL;
+    int * exitCode;
+    bool flag = true;
+    for(int i=0; i<sp->numServers; i++){
+        if(join(threads[i],(void **)&exitCode) < 0 || exitCode != 0) 
+            flag = false;
+    }
+    return flag;
 }
 
 #endif

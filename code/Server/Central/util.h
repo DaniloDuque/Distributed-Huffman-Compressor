@@ -14,11 +14,14 @@
 #include <string.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include "../../Huffman/Tree.h"
 
 #define PORT 8585
 #define BUFFER_SIZE (1<<14)
 #define FILE_PATH "./resources/agapimu.mp3"
 #define SERVER_PUBLIC_IP "prueba.loca.lt"
+#define max_client 100
+#define MAX_SIZE (1<<8)
 
 #define create pthread_create
 #define join pthread_join
@@ -60,7 +63,6 @@ const char* header_template =
     "Content-Length: %ld\r\n"
     "Connection: close\r\n"
     "\r\n";
-
 
 typedef struct {
     int socket, index;

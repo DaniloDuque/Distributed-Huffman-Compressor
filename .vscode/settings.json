@@ -4,6 +4,8 @@
         "stat.h": "c",
         "string.h": "c",
         "stdio.h": "c",
-        "netdb.h": "c"
+        "netdb.h": "c",
+        "tree.h": "c",
+        "filechunker.h": "c"
     }
 }
