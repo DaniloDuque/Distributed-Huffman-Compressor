@@ -16,7 +16,7 @@
 #include <netdb.h>
 
 #define PORT 8585
-#define BUFFER_SIZE 8192 
+#define BUFFER_SIZE (1<<14)
 #define FILE_PATH "./resources/agapimu.mp3"
 #define SERVER_PUBLIC_IP "prueba.loca.lt"
 

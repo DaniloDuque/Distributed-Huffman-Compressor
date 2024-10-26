@@ -10,7 +10,7 @@
 #include <netdb.h>
 #include <errno.h>
 
-#define BUFFER_SIZE 8192
+#define BUFFER_SIZE (1<<14)
 #define OUTPUT_FILE "agapimu.mp3"
 #define ll long long
 
