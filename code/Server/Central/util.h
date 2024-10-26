@@ -23,6 +23,7 @@
 #define create pthread_create
 #define join pthread_join
 #define exit_t pthread_exit
+#define detach pthread_detach
 
 #define mutex pthread_mutex_t
 #define mutex_init pthread_mutex_init
@@ -62,10 +63,15 @@ const char* header_template =
 
 
 typedef struct {
-    int socket;
+    int socket, index;
     struct sockaddr_in client_addr;
     socklen_t client_len;
 } client_info;
 
+typedef struct {
+    char* path;
+    client_info *client;
+    int numServers;
+} splitFileDTO;
 
 #endif 
