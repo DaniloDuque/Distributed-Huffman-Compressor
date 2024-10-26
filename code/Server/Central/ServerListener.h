@@ -38,7 +38,6 @@ bool receiveAndUpdateTable(int socket){
     ll revSize;
     recv(socket,&revSize,sizeof(revSize),0);
     recv(socket,table, revSize,0);
-    recv(socket, &revSize, sizeof(ll) * revSize, 0);
     fprintf(stderr,"Table received \n");
     fprintf(stderr, "Updating table...\n");
     updateTable(table);

@@ -80,9 +80,11 @@ void* filePart(void* arg) {
     fclose(file);
     if(receiveAndUpdateTable(p->client->socket)==false){
         perror("Error recieving the table of frequencies");
+        *exitCode = -1;
         exit_t(exitCode);
         return NULL;
     }
+    close(p->client->socket);
     *exitCode = 0;
     exit_t(exitCode);
     return NULL;
