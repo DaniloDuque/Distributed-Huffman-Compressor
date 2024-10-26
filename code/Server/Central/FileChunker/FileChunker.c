@@ -82,6 +82,7 @@ int splitFile(char* path, char** slaves){
         if((join(threads[i], (void **)&exitCode)) != 0) flag = true;
         if(*exitCode == -1) flag = true;
     }
+    free(exitCode);
     return flag;
 }
 

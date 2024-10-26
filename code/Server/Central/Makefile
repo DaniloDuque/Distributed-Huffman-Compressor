@@ -17,9 +17,8 @@ clean:
 	rm -f $(EXEC)
 
 help:
-	@echo "Comandos disponibles:"
-	@echo "  make        - Compila el servidor"
-	@echo "  make run    - Compila y ejecuta el servidor"
-	@echo "  make clean  - Elimina el ejecutable"
-	@echo "  make help   - Muestra esta ayuda"
-
+	@echo "Available commands:"
+	@echo "  make        - Compiles the server"
+	@echo "  make run    - Compiles and runs the server"
+	@echo "  make clean  - Removes the executable"
+	@echo "  make help   - Displays this help message"

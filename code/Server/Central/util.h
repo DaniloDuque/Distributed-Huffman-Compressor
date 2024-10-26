@@ -11,10 +11,12 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <pthread.h>
+#include <string.h>
 
 #define PORT 8585
 #define BUF_SIZE 1024 
 #define FILE_PATH "./resources/index.html"
+#define SERVER_PUBLIC_IP "190.113.103.54"
 
 #define create pthread_create
 #define join pthread_join

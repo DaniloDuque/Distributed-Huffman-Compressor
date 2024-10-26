@@ -1,4 +1,4 @@
-#include "../util.h"
+#include "util.h"
 
 void handle_client(int client_socket) {
     char buffer[BUF_SIZE];
@@ -8,7 +8,6 @@ void handle_client(int client_socket) {
     if (read_size > 0) {
         buffer[read_size] = '\0';  
         printf("Request:\n%s\n", buffer);
-        
         int file_fd = open(FILE_PATH, O_RDONLY);
         if (file_fd < 0) {
             perror("Error opening file");
@@ -28,7 +27,6 @@ void handle_client(int client_socket) {
                 while ((bytes_read = read(file_fd, file_buffer, BUF_SIZE)) > 0) {
                     write(client_socket, file_buffer, bytes_read);
                 }
-
                 close(file_fd);
             }
         }

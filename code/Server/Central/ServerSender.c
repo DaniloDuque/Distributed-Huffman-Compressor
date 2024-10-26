@@ -1,6 +1,7 @@
-#include "../util.h"
+#include "util.h"
 
-int send(uchar* part, char* ip) {
+int handleSend() {
+    
     int server_socket, client_socket;
     struct sockaddr_in server_addr, client_addr;
     socklen_t client_len = sizeof(client_addr);
@@ -12,7 +13,7 @@ int send(uchar* part, char* ip) {
     }
     
     server_addr.sin_family = AF_INET;
-    server_addr.sin_addr.s_addr = INADDR_ANY; //inet_addr("ip")
+    server_addr.sin_addr.s_addr = inet_addr(SERVER_PUBLIC_IP); //inet_addr("ip")
     server_addr.sin_port = htons(PORT);
     
     if (connect(server_socket, (struct sockaddr *)&server_addr,
@@ -34,4 +35,10 @@ int send(uchar* part, char* ip) {
 
     close(server_socket);
     return 0;
+}
+
+
+int main(){
+    handleSend();
+    return  0;
 }
