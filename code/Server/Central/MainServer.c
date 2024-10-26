@@ -52,6 +52,10 @@ int main() {
         return 1;
     }
 
+    for(int i = 0; i < MAX_SIZE; i++){
+        printf("%c %lld\n", i, freqTable[i]);   
+    }
+
     close(server_socket);
     return 0;
 }
