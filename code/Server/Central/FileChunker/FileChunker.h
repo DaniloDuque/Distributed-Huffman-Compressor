@@ -1,8 +1,8 @@
+#ifndef FILE_CHUNKER
+#define FILE_CHUNKER
 #include "../util.h"
-#ifndef FILE_CH
 
 #define RESOURCE_PATH "../resources/test.txt"
-#define BUFFER_SIZE 8192  // 8KB buffer size, ajustable según necesidades
 
 mutex m = PTHREAD_MUTEX_INITIALIZER;
 
@@ -24,13 +24,10 @@ params* createParams(ll i, ll j, char* path, client_info* client_info) {
 
 void* filePart(void* arg) {
     params* p = (params*)arg;
-    int* exitCode = (int*)malloc(sizeof(int));
     FILE* file;
     file = fopen(p->path, "rb");
     if(file == NULL) {
         perror("Error while opening file");
-        *exitCode = -1;
-        exit_t(exitCode);
         return NULL;
     }
 
@@ -40,8 +37,6 @@ void* filePart(void* arg) {
     // Enviamos primero el tamaño total del chunk
     if(send(p->client->socket, &p->chunkSize, sizeof(p->chunkSize), 0) == -1) {
         perror("Error while sending chunk size");
-        *exitCode = -1;
-        exit_t(exitCode);
         return NULL;
     }
 
@@ -60,8 +55,6 @@ void* filePart(void* arg) {
                 break;  // Fin del archivo
             }
             perror("Error while reading file");
-            *exitCode = -1;
-            exit_t(exitCode);
             return NULL;
         }
 
@@ -69,8 +62,6 @@ void* filePart(void* arg) {
         ssize_t bytesSent = send(p->client->socket, buffer, bytesRead, 0);
         if(bytesSent == -1) {
             perror("Error while sending buffer");
-            *exitCode = -1;
-            exit_t(exitCode);
             return NULL;
         }
 
@@ -78,32 +69,13 @@ void* filePart(void* arg) {
         remainingBytes -= bytesSent;
     }
 
-    // Verificamos que enviamos todo el chunk
     if(totalSent != p->chunkSize) {
         fprintf(stderr, "Warning: Sent %lld bytes of %lld expected\n", totalSent, p->chunkSize);
     }
 
     fclose(file);
 
-    // Enviamos el mensaje adicional (shum chan)
-    const char* shumDTO = "shum chan";
-    size_t dataLength = strlen(shumDTO);  
-
-    if(send(p->client->socket, &dataLength, sizeof(dataLength), 0) < 0) {
-        perror("Error sending size");
-        *exitCode = -1;
-        exit_t(exitCode);
-    }
-
-    if(send(p->client->socket, shumDTO, dataLength, 0) < 0) {
-        perror("Error sending data");
-        *exitCode = -1;
-        exit_t(exitCode);
-    }
-
     close(p->client->socket);
-    *exitCode = 0;
-    exit_t(exitCode);
     return NULL;
 }
 
@@ -135,3 +107,5 @@ void* splitFile(void* spd) {
     }
     return NULL;
 }
+
+#endif
