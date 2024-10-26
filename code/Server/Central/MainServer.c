@@ -10,7 +10,8 @@ int main() {
     struct sockaddr_in server_addr, client_addr;
     socklen_t client_len = sizeof(client_addr);
 
-    scanf("Insert the number of client servers: %d", &n);
+    printf("Insert the number of client servers: ");
+    scanf("%d", &n);
 
     server_socket = socket(AF_INET, SOCK_STREAM, 0);
     if (server_socket == -1) {
@@ -46,7 +47,7 @@ int main() {
         cont++;
     }
 
-    if(!splitFile(createSplitDTO(FILE_PATH,info,n))){
+    if(splitFile(createSplitDTO(FILE_PATH,info,n))){
         perror("Error al dividir el archivo desde Main");
         return 1;
     }

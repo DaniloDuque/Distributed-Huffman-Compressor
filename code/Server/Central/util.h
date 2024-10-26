@@ -18,7 +18,7 @@
 
 #define PORT 8585
 #define BUFFER_SIZE (1<<14)
-#define FILE_PATH "./resources/agapimu.mp3"
+#define FILE_PATH "./resources/test.txt"
 #define SERVER_PUBLIC_IP "prueba.loca.lt"
 #define max_client 100
 #define MAX_SIZE (1<<8)
