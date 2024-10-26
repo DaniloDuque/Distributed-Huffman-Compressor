@@ -1,7 +1,7 @@
 #include "util.h"
 
-#define IP "0.tcp.ngrok.io"
-#define NGROK_PORT 15113 // Puerto proporcionado por ngrok
+#define IP "6.tcp.ngrok.io"
+#define NGROK_PORT 15548 // Puerto proporcionado por ngrok
 
 void receive_file(int socket) {
     char buffer[BUFFER_SIZE];

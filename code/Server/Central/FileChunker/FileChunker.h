@@ -43,32 +43,14 @@ void* filePart(void* arg) {
         return NULL;
     }
     fclose(file);
-    if(send(p->client->socket, (void*)p->chunkSize, sizeof(p->chunkSize), 0)==-1){
-        perror("Error while sending the partFile");
-        *exitCode = -1;
-        exit_t(exitCode);
-    }
-    
-    /*char buffer[BUFFER_SIZE];
-    size_t bytes_read;
-    while ((bytes_read = fread(buffer, 1, BUFFER_SIZE, (FILE*)shumDTO)) > 0) {
-        if(send(p->client->socket, buffer, bytes_read, 0)) {
-            perror("Error while sending the file part");
-            *exitCode = -1;
-            exit_t(exitCode);
-        }
-    }*/
 
-    const char* shumDTO = "shum chan";
-    size_t dataLength = strlen(shumDTO);  
-
-    if (send(p->client->socket, &dataLength, sizeof(dataLength), 0) < 0) {
+    if (send(p->client->socket, &p->chunkSize, sizeof(p->chunkSize), 0) < 0) {
         perror("Error sending size");
         *exitCode = -1;
         exit_t(exitCode);
     }
 
-    if (send(p->client->socket, shumDTO, dataLength, 0) < 0) {
+    if (send(p->client->socket, filePart, p->chunkSize, 0) < 0) {
         perror("Error sending data");
         *exitCode = -1;
         exit_t(exitCode);
@@ -96,6 +78,7 @@ void* splitFile(void* spd){
     for(ll i = 0; i < sp->numServers; i++) {
         params* param = createParams(basePos, 
             chunkSize+(residual>0), sp->path, &sp->client[i]);
+        fprintf(stderr, "Base: %lld Total: %lld\n", param->basePosition, param->chunkSize);        
         basePos+=chunkSize+(residual>0);
         if(create(&threads[i], NULL, &filePart, param)!=0){
             perror("Error creating the thread in splitFile");
