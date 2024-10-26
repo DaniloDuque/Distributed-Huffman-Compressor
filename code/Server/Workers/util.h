@@ -11,7 +11,7 @@
 #include <errno.h>
 
 #define BUFFER_SIZE 1024
-#define NGROK_PORT 18122 // Puerto proporcionado por ngrok
 #define OUTPUT_FILE "received_index.html"
+#define ll long long
 
 #endif

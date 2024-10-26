@@ -1,6 +1,7 @@
 #include "util.h"
 
-#define IP "6.tcp.ngrok.io"
+#define IP "0.tcp.ngrok.io"
+#define NGROK_PORT 15113 // Puerto proporcionado por ngrok
 
 void receive_file(int socket) {
     char buffer[BUFFER_SIZE];
@@ -12,7 +13,7 @@ void receive_file(int socket) {
 
     ll file_size;
     recv(socket, &file_size, sizeof(file_size), 0);
-    printf("Size to file: %ld bytes\n", file_size);
+    printf("Size to file: %lld bytes\n", file_size);
 
     long total_received = 0;
     ssize_t bytes_received;

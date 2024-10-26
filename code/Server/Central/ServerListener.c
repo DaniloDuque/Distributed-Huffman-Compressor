@@ -68,9 +68,9 @@ int main() {
             continue;
         }
         info[cont].index = cont;
-        printf("Client conected!");
-        //inet_ntoa(info[cont].client_addr.sin_addr), ntohs(info[cont].client_addr.sin_port)
-        cont++;
+        printf("Client connected from %s:%d!\n", 
+        inet_ntoa(info[cont].client_addr.sin_addr), 
+        ntohs(info[cont].client_addr.sin_port));        cont++;
     }
     splitFileDTO * params = createSplitDTO(FILE_PATH, info, n);
     thread thr;

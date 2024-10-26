@@ -3,6 +3,7 @@
         "util.h": "c",
         "stat.h": "c",
         "string.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "netdb.h": "c"
     }
 }
