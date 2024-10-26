@@ -1,10 +1,13 @@
 #include "util.h"
 
+#define PORT_T 8585
+
+
 void handle_client(int client_socket) {
-    char buffer[BUF_SIZE];
+    char buffer[BUFFER_SIZE];
     int read_size;
     
-    read_size = read(client_socket, buffer, BUF_SIZE - 1);
+    read_size = read(client_socket, buffer, BUFFER_SIZE - 1);
     if (read_size > 0) {
         buffer[read_size] = '\0';  
         printf("Request:\n%s\n", buffer);
@@ -19,12 +22,12 @@ void handle_client(int client_socket) {
                 close(file_fd);
                 write(client_socket, error_response, strlen(error_response));
             } else {
-                char header[BUF_SIZE];
+                char header[BUFFER_SIZE];
                 snprintf(header, sizeof(header), header_template, file_stat.st_size);               
                 write(client_socket, header, strlen(header));
-                char file_buffer[BUF_SIZE];
+                char file_buffer[BUFFER_SIZE];
                 int bytes_read;
-                while ((bytes_read = read(file_fd, file_buffer, BUF_SIZE)) > 0) {
+                while ((bytes_read = read(file_fd, file_buffer, BUFFER_SIZE)) > 0) {
                     write(client_socket, file_buffer, bytes_read);
                 }
                 close(file_fd);

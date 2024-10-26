@@ -15,10 +15,10 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 
-#define PORT 8585
-#define BUF_SIZE 1024 
+#define PORT 11318
+#define BUFFER_SIZE 1024 
 #define FILE_PATH "./resources/index.html"
-#define SERVER_PUBLIC_IP "127.0.0.1"
+#define SERVER_PUBLIC_IP "prueba.loca.lt"
 
 #define create pthread_create
 #define join pthread_join
