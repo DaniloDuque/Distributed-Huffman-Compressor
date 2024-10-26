@@ -11,11 +11,18 @@ int handleSend() {
         perror("Error creating socket");
         exit(EXIT_FAILURE);
     }
+
+    struct hostent * servidor = gethostbyname(SERVER_PUBLIC_IP);
+    if (servidor == NULL) {
+        fprintf(stderr, "Error: No se pudo resolver el hostname\n");
+        return 1;
+    }
     
+    memset(&server_addr, 0, sizeof(server_addr));
     server_addr.sin_family = AF_INET;
-    server_addr.sin_addr.s_addr = inet_addr(SERVER_PUBLIC_IP); //inet_addr("ip")
     server_addr.sin_port = htons(PORT);
-    
+    memcpy(&server_addr.sin_addr.s_addr, servidor->h_addr_list[0], servidor->h_length);
+
     if (connect(server_socket, (struct sockaddr *)&server_addr,
                 sizeof(server_addr)) == -1) {
         perror("Error al conectar al servidor");
@@ -23,7 +30,7 @@ int handleSend() {
         return 1;
     }
 
-    char *mensaje = "Hola, servidor!";
+    char *mensaje = "Hello!";
 
     if (send(server_socket, mensaje, strlen(mensaje), 0) == -1) {
         perror("Error al enviar el mensaje");

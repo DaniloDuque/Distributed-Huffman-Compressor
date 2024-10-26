@@ -12,11 +12,13 @@
 #include <sys/stat.h>
 #include <pthread.h>
 #include <string.h>
+#include <arpa/inet.h>
+#include <netdb.h>
 
-#define PORT 8585
+#define PORT 11318
 #define BUF_SIZE 1024 
 #define FILE_PATH "./resources/index.html"
-#define SERVER_PUBLIC_IP "190.113.103.54"
+#define SERVER_PUBLIC_IP "4.tcp.ngrok.io"
 
 #define create pthread_create
 #define join pthread_join
