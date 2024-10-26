@@ -11,7 +11,7 @@
 #include <errno.h>
 
 #define BUFFER_SIZE 1024
-#define OUTPUT_FILE "received_index.html"
+#define OUTPUT_FILE "agapimu.mp3"
 #define ll long long
 
 #endif

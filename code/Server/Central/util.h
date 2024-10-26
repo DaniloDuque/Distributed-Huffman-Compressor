@@ -17,7 +17,7 @@
 
 #define PORT 8585
 #define BUFFER_SIZE 1024 
-#define FILE_PATH "./resources/index.html"
+#define FILE_PATH "./resources/agapimu.mp3"
 #define SERVER_PUBLIC_IP "prueba.loca.lt"
 
 #define create pthread_create

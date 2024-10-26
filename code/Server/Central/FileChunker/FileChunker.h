@@ -2,7 +2,7 @@
 #define FILE_CHUNKER
 
 #include "../util.h"
-#define RESOURCE_PATH "../resources/test.txt"
+#define RESOURCE_PATH "../resources/agapimu.mp3"
 
 mutex m = PTHREAD_MUTEX_INITIALIZER;
 
