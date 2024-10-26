@@ -11,6 +11,7 @@ bool calc_frecuency(FILE* file, int socket){
     }
 
     ll ptr = MAX_SIZE;
+    fclose(file);
     
     if(send(socket, &ptr, sizeof(ptr), 0) == -1) {
         perror("Error while sending chunk size");

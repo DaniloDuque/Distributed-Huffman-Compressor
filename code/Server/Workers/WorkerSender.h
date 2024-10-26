@@ -22,6 +22,5 @@ FILE* receive_file(int socket) {
         printf("Progress: %.2f%%\n", (float)total_received / file_size * 100);
     }
     printf("File received and saved as %s\n", OUTPUT_FILE);
-    fclose(file);
     return file;
 }
