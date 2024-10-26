@@ -6,6 +6,7 @@ bool calc_frecuency(FILE* file, int socket){
     char buffer[BUFFER_SIZE];
     size_t bytesRead;
     ll freq[MAX_SIZE] = {};
+
     while((bytesRead = fread(buffer, sizeof(char), BUFFER_SIZE, file)) > 0){
         for(int i=0; i<BUFFER_SIZE; i++) freq[buffer[i]]++;
     }

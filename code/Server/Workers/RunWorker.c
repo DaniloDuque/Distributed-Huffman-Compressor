@@ -34,6 +34,6 @@ int main() {
     if(!calc_frecuency(file,server_socket)){
         perror("Error en el calculo de las frecuencias");
     }
-    close(server_socket);
+    //close(server_socket);
     return 0;
 }
