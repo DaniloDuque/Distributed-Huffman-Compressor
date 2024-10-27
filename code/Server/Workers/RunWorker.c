@@ -33,6 +33,14 @@ int main() {
     if(calc_frecuency(server_socket)==false){
         perror("Error en el calculo de las frecuencias");
     }
+    uchar codes[2*MAX_SIZE];
+    if(recv(server_socket, codes, 2*MAX_SIZE*sizeof(uchar), 0)==-1){
+        perror("Error recibing the code tables");
+        return 1;
+    }
+    for(int i=0; i<2*MAX_SIZE; i+=2){
+        printf("%d %d\n", codes[i], codes[i+1]);
+    }
     close(server_socket);
     return 0;
 }

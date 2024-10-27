@@ -1,7 +1,9 @@
 #include "util.h"
 #include "FileChunker/FileChunker.h"
 #include "RouteFinder.h"
+#include "FileCompressor/FileCompressor.h"
 
+uchar dto[MAX_SIZE*2] = {};
 client_info info[max_client];
 ll freqTable[MAX_SIZE];
 mutex keys[MAX_SIZE];
@@ -55,15 +57,20 @@ int main() {
         return 1;
     }
     route ** routes = routeFinder(freqTable);
-    int dto[MAX_SIZE*2] = {};
     for(int i = 0, j = 0; i < MAX_SIZE*2; i+=2, ++j){
-        if(routes[i]){
-            printf("%s\n", toString(routes[i], i));
+        if(routes[j]!=NULL){
             dto[i] = routes[j]->len;
             dto[i+1] = routes[j]->msk;
         }
+        else{
+            dto[i]=0;
+            dto[i+1]=0;
+        }
     }
-    
+    if(compressFile(n,info) == false){
+        perror("Error al crear los hilos desde main para comprimir");
+        return 1;
+    }
     close(server_socket);
     return 0;
 }

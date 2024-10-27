@@ -29,7 +29,7 @@ void displayTree(node* root, char* prefix, bool islft) {
 }
 
 typedef struct {
-    int len, msk;
+    uchar len, msk;
 } route;
 
 void displayRoute(route* r, uchar c){

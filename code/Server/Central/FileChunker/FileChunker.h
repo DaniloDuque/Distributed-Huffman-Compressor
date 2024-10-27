@@ -84,7 +84,6 @@ void* filePart(void* arg) {
         exit_t(exitCode);
         return NULL;
     }
-    close(p->client->socket);
     *exitCode = 0;
     exit_t(exitCode);
     return NULL;

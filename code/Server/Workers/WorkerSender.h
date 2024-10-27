@@ -9,7 +9,10 @@ bool receive_file(int socket) {
     }
 
     ll file_size;
-    recv(socket, &file_size, sizeof(file_size), 0);
+    if(recv(socket, &file_size, sizeof(file_size), 0)==-1){
+        printf("Error receiving the part size\n");
+        return false;
+    }
     printf("Size to file: %lld bytes\n", file_size);
 
     long total_received = 0;

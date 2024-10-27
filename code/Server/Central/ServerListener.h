@@ -47,10 +47,4 @@ bool receiveAndUpdateTable(int socket){
     return true;
 }
 
-void sendTree(int client_socket, ll* table){
-    send(client_socket, table, sizeof(table), 0);
-    fprintf(stdout, "Send table with code 0;");
-}
-
-
 #endif

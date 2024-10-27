@@ -6,6 +6,7 @@
         "stdio.h": "c",
         "netdb.h": "c",
         "tree.h": "c",
-        "filechunker.h": "c"
+        "filechunker.h": "c",
+        "routefinder.h": "c"
     }
 }

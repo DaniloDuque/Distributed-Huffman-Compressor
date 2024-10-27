@@ -22,11 +22,6 @@ bool calc_frecuency(int socket){
         perror("Error enviando la frecuencia");
         return false;
     }
-
-    for(int i = 0; i < MAX_SIZE; i++){
-        printf("%c %lld\n", i, freq[i]);   
-    }
-
     return true;
 }
 
