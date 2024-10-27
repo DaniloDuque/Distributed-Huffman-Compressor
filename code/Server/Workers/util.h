@@ -19,6 +19,7 @@
 #define uchar unsigned char
 #define MAX_SIZE (1<<8)
 #define PATH_COMPRESS "compressed_file"
+#define Byte uchar
 
 #define TEST(msk, i) ((msk)&(1<<(i)))
 #define SET(msk, i) ((msk)|=(1<<(i)))
