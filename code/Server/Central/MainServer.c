@@ -56,6 +56,9 @@ int main() {
     }
 
     route ** routes = routeFinder(freqTable);
+    for(int i = 0; i<MAX_SIZE; ++i)
+        if(routes[i])
+            print("%s\n", toString(routes[i],i));
 
     close(server_socket);
     return 0;

@@ -3,6 +3,7 @@
 #include "Node.h"
 #include "Priority_Queue.h"
 #include <stdbool.h>
+#include <math.h>
 
 #define SET(msk, i) ((msk)|(1<<(i)))
 #define TEST(msk, i) ((msk)&(1<<(i)))
@@ -43,6 +44,29 @@ route* newRoute(int len, int msk){
     return r;
 }
 
+char* mskToString(int start, int msk, int len, char * r){
+    for(int i = 0; i<len; ++i) r[start+i]=((bool)TEST(msk, i))+'0';
+    return r;
+}
+
+//ascii-route/
+char* toString(route* r, int asc){
+    int digits = log10(asc);
+    char * st = (char*)calloc(digits+ 4 + r->len, sizeof(char));
+    int pot=10;
+    int pos=0;
+    for(int i=0; i<=digits; i++){
+        st[pos]='0'+asc%pot;
+        pot*=10;
+        pos++;
+    }
+    st[pos]='-';
+    st = mskToString(pos+1, r->msk, r->len, st);
+    st[digits+1+r->len]='/';
+    st[digits+2+r->len]='\0';
+    return st;
+}
+
 void RecRoutes(node* root, int lvl, route r, route** routes) {
     if (!root) return;
     if (!root->lft && !root->rght) {routes[root->data] = newRoute(r.len, r.msk); return;}
@@ -52,7 +76,7 @@ void RecRoutes(node* root, int lvl, route r, route** routes) {
 }
 
 route** makeRoutes(node* root) {
-    route** routes = (route**)calloc(256, sizeof(route*));  
+    route** routes = (route**)calloc((1<<8), sizeof(route*));  
     route init = {0, 0};  
     RecRoutes(root, 0, init, routes);
     return routes;
