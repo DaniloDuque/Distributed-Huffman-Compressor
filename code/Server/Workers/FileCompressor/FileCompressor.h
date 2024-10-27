@@ -3,7 +3,7 @@
 
 #include "../util.h"
 
-bool compress(uchar* codes, int socket) {
+bool compress(int* codes, int socket) {
     
     int n = MAX_SIZE*2;
     ll contBits=0;
@@ -31,18 +31,16 @@ bool compress(uchar* codes, int socket) {
                 if(TEST(codes[2*ascii+1], i)) SET(byte, bit--), printf("1");
                 else printf("0"); 
                 if(bit==-1){
-                    cbuffer[compressPos]=byte;
+                    cbuffer[compressPos++]=byte;
                     byte=0;
-                    compressPos++; //si no sirve ni modo
+                    //compressPos++; //si no sirve ni modo
                     bit=7;
                 }
             }
         }
         fwrite(cbuffer, 1, compressPos, fileW);
     }
-    if(bytesRead % 8 != 0) {
-        
-    }
+    printf("\n");
     cbuffer[0]=byte;
     cbuffer[1]=(bit+1)%8;
     //printf("%d %d\n", byte, (bit+1)%8);

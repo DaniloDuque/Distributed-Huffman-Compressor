@@ -3,7 +3,7 @@
 #include "RouteFinder.h"
 #include "FileCompressor/FileCompressor.h"
 
-uchar dto[MAX_SIZE*2] = {};
+int dto[MAX_SIZE*2] = {};
 client_info info[max_client];
 ll freqTable[MAX_SIZE];
 mutex keys[MAX_SIZE];
