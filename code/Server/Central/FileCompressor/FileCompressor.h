@@ -28,7 +28,42 @@ void* sendRoutes(void* arg) {
         close(socket);
         exit_t(exitCode);
     }
-    fprintf(stderr,"Tamaño del archivo comprimido: %lld\n", sizeFile);
+    fprintf(stderr,"Size of expected compressed part %lld\n", sizeFile);
+
+    char ruta[25];
+    sprintf(ruta, "%s%d", SAVED_FILE_ROUTE, info->index);
+    fprintf(stderr, "Writing to file: %s\n", ruta);
+
+    FILE* file=fopen(ruta, "wb");
+    
+    if(file==NULL){
+        perror("Error creating the compressed file");
+        *exitCode = -1;
+        close(socket);
+        exit_t(exitCode);
+    }
+
+    ll total_received = 0;
+    ssize_t bytes_received;
+    
+    uchar buffer[BUFFER_SIZE];
+
+    while (total_received < sizeFile && 
+           (bytes_received = recv(socket, buffer, BUFFER_SIZE, 0)) > 0) {
+        fwrite(buffer, 1, bytes_received, file);
+        total_received += bytes_received;
+        // printf("Progress: %.2f%%\n", (float)total_received / sizeFile * 100);
+    }
+    if(sizeFile!=total_received){
+        perror("Error: amount of bytes not equal");
+        *exitCode = -1;
+        fclose(file);
+        close(socket);
+        exit_t(exitCode);
+    }
+    printf("File received and saved as %s\n", ruta);
+
+    fclose(file);
     close(info->socket);
     *exitCode = 0;
     exit_t(exitCode);

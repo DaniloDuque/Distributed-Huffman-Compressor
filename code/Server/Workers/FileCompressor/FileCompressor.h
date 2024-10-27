@@ -18,14 +18,17 @@ bool sendCompress(int socket) {
         fclose(fileL);
         return false;
     }
+
+    printf("Se van a enviar %lld bytes\n", sizeFile);
     
     if(send(socket, &sizeFile, sizeof(sizeFile), 0) < 0){
         perror("Error al enviar el tamano del compreso");
         fclose(fileL);
         return false;
     }
-    printf("Send bytes %lld",sizeFile);
+    printf("Send bytes %lld\n",sizeFile);
 
+    fseek(fileL,0,SEEK_SET);
     ll remainingBytes = sizeFile;
     ll totalSent = 0;
     while(remainingBytes > 0) {
@@ -52,8 +55,9 @@ bool sendCompress(int socket) {
         fprintf(stderr, "Error: Sent %lld bytes of %lld expected\n", totalSent, sizeFile);
         return false;
     }    
-
     fclose(fileL);
+    
+    return true;
 }
 
 
@@ -114,7 +118,6 @@ bool compress(int* codes, int socket) {
     }
 
     return sendCompress(socket);
-
 }
 
 
