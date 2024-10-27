@@ -18,5 +18,21 @@
 #define ll long long
 #define uchar unsigned char
 #define MAX_SIZE (1<<8)
+#define PATH_COMPRESS "compressed_file"
+
+#define TEST(msk, i) ((msk)&(1<<(i)))
+#define SET(msk, i) ((msk)|=(1<<(i)))
+
+void displayRoute(int asc, int len, int msk){
+    printf("Character: %c  Length: %d  Route: ", asc, len);
+    for(int i = 0; i<len; ++i) printf("%u", (bool)TEST(msk, i));
+    puts("");
+}
+
+char* toString(int len, int msk){
+    char* r = (char*)malloc(len*sizeof(char));
+    for(int i = 0; i<len; ++i) r[i]=(bool)TEST(msk, i)+'0';
+    return r;
+}
 
 #endif

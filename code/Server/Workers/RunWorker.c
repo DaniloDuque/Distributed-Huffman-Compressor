@@ -1,12 +1,5 @@
 #include "ByteCounter.h"
-
-#define TEST(msk, i) ((msk)|(1<<(i)))
-
-void displayRoute(int asc, int len, int msk){
-    printf("Character: %c  Length: %d  Route: ", asc, len);
-    for(int i = 0; i<len; ++i) printf("%u", (bool)TEST(msk, i));
-    puts("");
-}
+#include "FileCompressor/FileCompressor.h"
 
 int main() {
     int server_socket, client_socket;
@@ -41,13 +34,19 @@ int main() {
     if(calc_frecuency(server_socket)==false){
         perror("Error en el calculo de las frecuencias");
     }
-    uchar codes[2*MAX_SIZE];
-    if(recv(server_socket, codes, 2*MAX_SIZE*sizeof(uchar), 0)==-1){
+    int codes[2*MAX_SIZE];
+    if(recv(server_socket, codes, 2*MAX_SIZE*sizeof(int), 0)==-1){
         perror("Error recibing the code tables");
         return 1;
     }
-    for(int i=0; i<2*MAX_SIZE; i+=2){
-        displayRoute(i,codes[i],codes[i+1]);
+    for(int i=0, j=0; i<2*MAX_SIZE; i+=2, j++){
+        if(codes[j]){
+            displayRoute(j, codes[i], codes[i+1]);
+        }
+    }
+    if(compress(codes,server_socket) == false){
+        perror("Error al comprimir al archivo");
+        return 1;
     }
     close(server_socket);
     return 0;
