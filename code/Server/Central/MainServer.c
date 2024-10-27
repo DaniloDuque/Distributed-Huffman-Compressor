@@ -4,7 +4,7 @@
 #include "FileCompressor/FileCompressor.h"
 
 int dto[MAX_SIZE*2] = {};
-client_info info[max_client];
+client_info info[MAX_CLIENT];
 ll freqTable[MAX_SIZE];
 mutex keys[MAX_SIZE];
 mutex matex = PTHREAD_MUTEX_INITIALIZER;

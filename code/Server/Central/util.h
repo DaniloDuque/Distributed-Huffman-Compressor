@@ -19,9 +19,9 @@
 #define PORT 8585
 #define BUFFER_SIZE (1<<14)
 #define FILE_PATH "./resources/test.txt"
-#define SERVER_PUBLIC_IP "prueba.loca.lt"
-#define max_client 100
 #define MAX_SIZE (1<<8)
+#define SAVED_FILE_ROUTE "./resources/saved/"
+#define MAX_CLIENT 100
 
 #define create pthread_create
 #define join pthread_join
@@ -75,16 +75,5 @@ typedef struct {
     client_info *client;
     int numServers;
 } splitFileDTO;
-
-// typedef struct{
-//   char * s;
-
-// } vertex;
-
-// typedef struct{
-
-// } linked_list;
-
-
 
 #endif 

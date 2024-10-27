@@ -3,36 +3,53 @@
 
 #include "../util.h"
 extern int dto[MAX_SIZE*2];
-// mutex dto_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 void* sendRoutes(void* arg) {
     int* exitCode = (int*)malloc(sizeof(int));
+    client_info* info = (client_info*) arg;
     if (!exitCode) {
         perror("Error in malloc");
         return NULL;
     }
-    int socket = *((int*) arg);
-    // lock(&dto_mutex);
-    if(send(socket, (int*)dto, 2*MAX_SIZE*sizeof(int), 0) < 0) {
+    if(send(info->socket, (int*)dto, 2*MAX_SIZE*sizeof(int), 0) < 0) {
         perror("Error sending the code table");
         *exitCode = -1;
-        // unlock(&dto_mutex);
-        close(socket);
-        return exitCode;
+        close(info->socket);
+        return NULL;
     }
-    // unlock(&dto_mutex);
     ll partSize;
-    if(recv(socket, &partSize, sizeof(partSize), 0)==-1){
-       perror("Error receiving the compressed part");
+    if(recv(info->socket, &partSize, sizeof(partSize), 0)==-1){
+        perror("Error receiving the compressed part");
         *exitCode=-1;
         exit_t(exitCode);
-        close(socket);
+        close(info->socket);
         return exitCode;
     }
-    printf("Bytes received of compressed part %ll", partSize);
-    close(socket);
+    printf("Bytes received of compressed part %lld\n", partSize);
+    
+    char ruta[0x19];
+    sprintf(ruta, "%s%d", SAVED_FILE_ROUTE, info->index); 
+    FILE* filePart=fopen(ruta, "wb");
+    if(filePart==NULL){
+        perror("Error creating the compressed part file");
+        *exitCode=-1;
+        exit_t(exitCode);
+        close(info->socket);
+        return NULL;
+    }
+    ll total_received=0;
+    ssize_t bytes_received;
+    uchar * buffer[BUFFER_SIZE];
+    while (total_received < partSize && 
+           (bytes_received = recv(info->socket, buffer, BUFFER_SIZE, 0)) > 0) {
+        fwrite(buffer, 1, bytes_received, filePart);
+        total_received += bytes_received;
+    }
+    fclose(filePart);
+    close(info->socket);
     *exitCode = 0;
-    return exitCode;
+    exit_t(exitCode);
+    perror("LISTO");
 }
 
 bool compressFile(int n, client_info* clients) {
@@ -42,7 +59,7 @@ bool compressFile(int n, client_info* clients) {
     bool flag = true;
     
     for(int i = 0; i < n; i++) {
-        if(create(&threads[i], NULL, &sendRoutes, &clients[i].socket) != 0) {
+        if(create(&threads[i], NULL, &sendRoutes, &clients[i]) != 0) {
             perror("Error creating threads for compression");
             return false;
         }
@@ -51,7 +68,7 @@ bool compressFile(int n, client_info* clients) {
     int* exitCode;
     for(int i = 0; i < n; i++) {
         if(join(threads[i],(void **)&exitCode) != 0 || *exitCode != 0){
-            fprintf(stderr,"Hilo %d peto al intentar comprimir",i);    
+            fprintf(stderr,"Thread %d crashed while compressing",i);    
             flag = false;
         }
     }
