@@ -90,61 +90,61 @@ bool compress(int* codes, int socket) {
 
     ll remainingBytes = file_size;
     ll totalSent = 0;
-    while (remainingBytes > 0) {
-        size_t bytesToRead = (remainingBytes < BUFFER_SIZE) ? remainingBytes : BUFFER_SIZE;
-        bytesRead = fread(buffer, 1, bytesToRead, fileW);
+    // while (remainingBytes > 0) {
+    //     size_t bytesToRead = (remainingBytes < BUFFER_SIZE) ? remainingBytes : BUFFER_SIZE;
+    //     bytesRead = fread(buffer, 1, bytesToRead, fileW);
 
-        if (bytesRead <= 0) {
-            if (feof(fileW)) break;
-            perror("Error al leer el archivo comprimido para enviar");
-            fclose(fileW);
+    //     if (bytesRead <= 0) {
+    //         if (feof(fileW)) break;
+    //         perror("Error al leer el archivo comprimido para enviar");
+    //         fclose(fileW);
+    //         return false;
+    //     }
+
+    //     size_t totalSentInChunk = 0;
+    //     while (totalSentInChunk < bytesRead) {
+    //         ssize_t bytesSent = send(socket, buffer + totalSentInChunk, bytesRead - totalSentInChunk, 0);
+    //         if (bytesSent == -1) {
+    //             perror("Error al enviar el archivo comprimido");
+    //             fclose(fileW);
+    //             return false;
+    //         }
+    //         totalSentInChunk += bytesSent;
+    //     }
+    //     totalSent += totalSentInChunk;
+    //     remainingBytes -= bytesRead;
+    // }
+
+    // if (totalSent != file_size) {
+    //     fprintf(stderr, "Error: Se enviaron %lld bytes de %lld esperados\n", totalSent, file_size);
+    //     fclose(fileW);
+    //     return false;
+    // }
+
+    // fclose(fileW);
+    
+    while(remainingBytes > 0){
+        size_t bytesToRead = (remainingBytes < BUFFER_SIZE) ? remainingBytes : BUFFER_SIZE;
+        size_t bytesRead = fread(buffer, 1, bytesToRead, fileW);
+        
+        if(bytesRead <= 0) {
+            if(feof(fileW)) break;  
+            perror("Error sending file");
             return false;
         }
-
-        size_t totalSentInChunk = 0;
-        while (totalSentInChunk < bytesRead) {
-            ssize_t bytesSent = send(socket, buffer + totalSentInChunk, bytesRead - totalSentInChunk, 0);
-            if (bytesSent == -1) {
-                perror("Error al enviar el archivo comprimido");
-                fclose(fileW);
-                return false;
-            }
-            totalSentInChunk += bytesSent;
+        ssize_t bytesSent = send(socket, buffer, bytesRead, 0);
+        if(bytesSent == -1) {
+            perror("Error while sending file");
+            return false;
         }
-        totalSent += totalSentInChunk;
-        remainingBytes -= bytesRead;
+        totalSent += bytesSent;
+        remainingBytes -= bytesSent;
     }
-
-    if (totalSent != file_size) {
-        fprintf(stderr, "Error: Se enviaron %lld bytes de %lld esperados\n", totalSent, file_size);
-        fclose(fileW);
+    if(totalSent != file_size) {
+        fprintf(stderr, "Error: Sent %lld bytes of %lld expected\n", totalSent,file_size);
         return false;
-    }
-
-    fclose(fileW);
-    
-    // while(remainingBytes > 0){
-    //     size_t bytesToRead = (remainingBytes < BUFFER_SIZE) ? remainingBytes : BUFFER_SIZE;
-    //     size_t bytesRead = fread(buffer, 1, bytesToRead, fileW);
-        
-    //     if(bytesRead <= 0) {
-    //         if(feof(fileW)) break;  
-    //         perror("Error sending file");
-    //         return false;
-    //     }
-    //     ssize_t bytesSent = send(socket, buffer, bytesRead, 0);
-    //     if(bytesSent == -1) {
-    //         perror("Error while sending file");
-    //         return false;
-    //     }
-    //     totalSent += bytesSent;
-    //     remainingBytes -= bytesSent;
-    // }
-    // if(totalSent != file_size) {
-    //     fprintf(stderr, "Error: Sent %lld bytes of %lld expected\n", totalSent,file_size);
-    //     return false;
-    // }   
-    
+    }   
+    fclose(file_size);
     // if(remove(PATH_COMPRESS) != 0) {
     //     perror("Error al eliminar el archivo");
     //     return false;

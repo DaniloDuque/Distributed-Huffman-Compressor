@@ -46,7 +46,8 @@ void* sendRoutes(void* arg) {
     ll total_received=0;
     ssize_t bytes_received;
     uchar * buffer[BUFFER_SIZE];
-    // lock(&cmp);
+    
+    lock(&cmp);
     while (total_received < partSize && 
            (bytes_received = recv(info->socket, buffer, BUFFER_SIZE, 0)) > 0) {
         fwrite(buffer, 1, bytes_received, filePart);
@@ -56,11 +57,11 @@ void* sendRoutes(void* arg) {
         fprintf(stderr, "bytes do not match, received: %lld expected: %lld\n", total_received, partSize);
         *exitCode=-1;
         close(info->socket);
-        // unlock(&cmp);
+        unlock(&cmp);
         exit_t(exitCode);
         return NULL;
     }
-    //unlock(&cmp);
+    unlock(&cmp);
     fclose(filePart);
     close(info->socket);
     *exitCode = 0;
