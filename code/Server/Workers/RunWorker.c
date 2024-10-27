@@ -1,5 +1,7 @@
 #include "ByteCounter.h"
 
+#define TEST(msk, i) ((msk)|(1<<(i)))
+
 void displayRoute(int asc, int len, int msk){
     printf("Character: %c  Length: %d  Route: ", asc, len);
     for(int i = 0; i<len; ++i) printf("%u", (bool)TEST(msk, i));
