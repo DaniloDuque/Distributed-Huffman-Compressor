@@ -54,12 +54,16 @@ int main() {
         perror("Error al dividir el archivo desde Main");
         return 1;
     }
-
     route ** routes = routeFinder(freqTable);
-    for(int i = 0; i<MAX_SIZE; ++i)
-        if(routes[i])
-            print("%s\n", toString(routes[i],i));
-
+    int dto[MAX_SIZE*2] = {};
+    for(int i = 0, j = 0; i < MAX_SIZE*2; i+=2, ++j){
+        if(routes[i]){
+            printf("%s\n", toString(routes[i], i));
+            dto[i] = routes[j]->len;
+            dto[i+1] = routes[j]->msk;
+        }
+    }
+    
     close(server_socket);
     return 0;
 }

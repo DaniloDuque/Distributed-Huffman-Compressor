@@ -76,4 +76,15 @@ typedef struct {
     int numServers;
 } splitFileDTO;
 
+// typedef struct{
+//   char * s;
+
+// } vertex;
+
+// typedef struct{
+
+// } linked_list;
+
+
+
 #endif 

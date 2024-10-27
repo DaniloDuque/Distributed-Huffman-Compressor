@@ -45,7 +45,8 @@ route* newRoute(int len, int msk){
 }
 
 char* mskToString(int start, int msk, int len, char * r){
-    for(int i = 0; i<len; ++i) r[start+i]=((bool)TEST(msk, i))+'0';
+    for(int i = 0; i<len; ++i) 
+        r[start+i]=((bool)TEST(msk, i))+'0';
     return r;
 }
 
@@ -53,13 +54,15 @@ char* mskToString(int start, int msk, int len, char * r){
 char* toString(route* r, int asc){
     int digits = log10(asc);
     char * st = (char*)calloc(digits+ 4 + r->len, sizeof(char));
-    int pot=10;
+    char dig[digits+1];
     int pos=0;
-    for(int i=0; i<=digits; i++){
-        st[pos]='0'+asc%pot;
-        pot*=10;
+    while(asc){
+        dig[pos]=asc%10;
+        asc/=10;
         pos++;
     }
+    pos=0;
+    for(int i=digits; i>=0; i--, pos++) st[pos]=dig[i];
     st[pos]='-';
     st = mskToString(pos+1, r->msk, r->len, st);
     st[pos+1+r->len]='/';
