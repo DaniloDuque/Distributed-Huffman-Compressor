@@ -18,7 +18,7 @@
 
 #define PORT 8585
 #define BUFFER_SIZE (1<<14)
-#define FILE_PATH "./resources/test.txt"
+#define FILE_PATH "./resources/JetBrainsMono.zip"
 #define MAX_SIZE (1<<8)
 #define SAVED_FILE_ROUTE "./resources/saved/"
 #define MAX_CLIENT 100

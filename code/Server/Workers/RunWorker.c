@@ -48,7 +48,7 @@ int main() {
         perror("Error compressing the file");
         return 1;
     }
-
+    while(1);
     close(server_socket);
     return 0;
 }

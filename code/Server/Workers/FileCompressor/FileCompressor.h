@@ -63,7 +63,7 @@ bool sendCompress(int socket) {
 
 bool compress(int* codes, int socket) {
     if (!codes) return false;
-    
+    //printf("Size of table of codes %lld\n")
     int byte = 0;
     int bit = 7;
     FILE* fileR = fopen(OUTPUT_FILE, "rb");    
@@ -122,4 +122,5 @@ bool compress(int* codes, int socket) {
 
 
 #endif
+
 
