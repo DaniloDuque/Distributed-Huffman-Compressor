@@ -15,23 +15,21 @@ void* sendRoutes(void* arg) {
         close(socket);
         exit_t(exitCode);
     }
-    int socket = *((int*) arg);
     if(send(socket, (int*)dto, 2*MAX_SIZE*sizeof(int), 0) < 0) {
         perror("Error sending the code table");
         *exitCode = -1;
         close(socket);
         exit_t(exitCode);
     }
-    
     ll sizeFile;
-    if(recv(socket, &sizeFile,sizeof(sizeFile),0)){
+    if(recv(socket, &sizeFile, sizeof(sizeFile),0) < 0){
         perror("Error al recibir el tamano");
         *exitCode = -1;
         close(socket);
         exit_t(exitCode);
     }
     fprintf(stderr,"Tamaño del archivo comprimido: %lld\n", sizeFile);
-    close(socket);
+    close(info->socket);
     *exitCode = 0;
     exit_t(exitCode);
 }

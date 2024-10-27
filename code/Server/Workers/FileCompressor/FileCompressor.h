@@ -107,6 +107,8 @@ bool compress(int* codes, int socket) {
     //     perror("Error al eliminar el archivo");
     //     return false;
     // }
+
+    //-----------------------------------------
  
     // fileW = fopen(PATH_COMPRESS,"rb");
     // if(fileW == NULL){
@@ -226,6 +228,34 @@ bool compress(int* codes, int socket) {
         return false;
     }
     printf("Send bytes %lld",sizeFile);
+
+    ll remainingBytes = sizeFile;
+    ll totalSent = 0;
+
+    while(remainingBytes > 0) {
+        size_t bytesToRead = (remainingBytes < BUFFER_SIZE) ? remainingBytes : BUFFER_SIZE;
+        size_t bytesRead = fread(buffer, 1, bytesToRead, fileL);
+        
+        if(bytesRead <= 0) {
+            if(feof(fileL)) break;  
+            perror("Error sending file");
+            return false;
+        }
+
+        ssize_t bytesSent = send(socket, buffer, bytesRead, 0);
+        if(bytesSent == -1) {
+            perror("Error while sending file");
+            return false;
+        }
+
+        totalSent += bytesSent;
+        remainingBytes -= bytesSent;
+    }
+    if(totalSent != sizeFile) {
+        fprintf(stderr, "Error: Sent %lld bytes of %lld expected\n", totalSent, sizeFile);
+        return false;
+    }    
+
     fclose(fileL);
 
     // if(remove(OUTPUT_FILE) != 0) {
@@ -234,10 +264,7 @@ bool compress(int* codes, int socket) {
     // }
     
     return true;
-
-    
-
-
 }
+
 #endif
 

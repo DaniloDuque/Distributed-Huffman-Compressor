@@ -57,7 +57,7 @@ void* sendRoutes(void* arg) {
     }
 
     ll total_received = 0;
-    char buffer[BUFFER_SIZE];
+    uchar buffer[BUFFER_SIZE];
     
     while (total_received < partSize) {
         size_t remaining = partSize - total_received;
