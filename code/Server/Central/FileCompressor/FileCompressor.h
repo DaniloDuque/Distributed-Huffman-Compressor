@@ -29,6 +29,7 @@ void* sendRoutes(void* arg) {
     
     char ruta[0x19];
     sprintf(ruta, "%s%d", SAVED_FILE_ROUTE, info->index); 
+    fprintf(stderr,"%s\n", ruta);
     FILE* filePart=fopen(ruta, "wb");
     if(filePart==NULL){
         perror("Error creating the compressed part file");
@@ -68,7 +69,7 @@ bool compressFile(int n, client_info* clients) {
     int* exitCode;
     for(int i = 0; i < n; i++) {
         if(join(threads[i],(void **)&exitCode) != 0 || *exitCode != 0){
-            fprintf(stderr,"Thread %d crashed while compressing",i);    
+            fprintf(stderr,"Thread %d crashed while compressing\n",i);    
             flag = false;
         }
     }

@@ -71,7 +71,7 @@ bool compress(int* codes, int socket) {
         perror("Error al enviar el size");
         return false;
     }
-    printf("Bytes send of compressed part %lld", file_size);
+    printf("Bytes send of compressed part %lld\n", file_size);
     
     ll remainingBytes = file_size;
     ll totalSent = 0;
