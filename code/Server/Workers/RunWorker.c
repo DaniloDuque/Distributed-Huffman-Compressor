@@ -27,11 +27,10 @@ int main() {
     }
 
     printf("Connected. Receiving file...\n");
-    FILE* file = receive_file(server_socket);
-    if(file == NULL){
+    if(receive_file(server_socket)== false){
         perror("Error al obtener el archivo");
     } 
-    if(!calc_frecuency(file,server_socket)){
+    if(calc_frecuency(server_socket)==false){
         perror("Error en el calculo de las frecuencias");
     }
     close(server_socket);

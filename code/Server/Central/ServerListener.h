@@ -3,6 +3,8 @@
 
 #include "MakeTable.h"
 
+extern mutex matex;
+
 splitFileDTO* createSplitDTO(char * path, client_info* clients, int n){
     splitFileDTO* s = (splitFileDTO*) malloc(sizeof(splitFileDTO));
     s->path = path;
@@ -44,16 +46,22 @@ bool receiveAndUpdateTable(int socket){
         perror("Error receiving the table");
         return false;
     }
+    lock(&matex);
+    for(int i = 0; i < MAX_SIZE; i++){
+        printf("%c %lld - ", i, table[i]);   
+    }puts("");
+    unlock(&matex);
+
     fprintf(stdout, "Table received");
     updateTable(table);
     fprintf(stdout,"Table updated");
     return true;
 }   
 
-void sendTable(int client_socket, ll* table){
-    send(client_socket, table, sizeof(table), 0);
-    fprintf(stderr, "Send table with code 0;");
-}
+// void sendTable(int client_socket, ll* table){
+//     send(client_socket, table, sizeof(table), 0);
+//     fprintf(stdout, "Send table with code 0;");
+// }
 
 
 #endif

@@ -4,6 +4,7 @@
 client_info info[max_client];
 ll freqTable[MAX_SIZE];
 mutex keys[MAX_SIZE];
+mutex matex = PTHREAD_MUTEX_INITIALIZER;
 
 int main() {
     int server_socket, client_socket, n, cont = 0;

@@ -1,11 +1,11 @@
 #include "util.h"
 
-FILE* receive_file(int socket) {
+bool receive_file(int socket) {
     char buffer[BUFFER_SIZE];
     FILE* file = fopen(OUTPUT_FILE, "wb");
     if (file == NULL) {
         printf("Error creating output file\n");
-        return NULL;
+        return false;
     }
 
     ll file_size;
@@ -23,8 +23,6 @@ FILE* receive_file(int socket) {
     }
     printf("File received and saved as %s\n", OUTPUT_FILE);
 
-    fflush(file);
-    fseek(file,0, SEEK_SET);
-    
-    return file;
+    fclose(file);
+    return true;
 }
