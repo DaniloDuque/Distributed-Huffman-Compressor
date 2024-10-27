@@ -36,12 +36,17 @@ void send_file(int client_socket, const char* filename) {
 bool receiveAndUpdateTable(int socket){
     ll table[MAX_SIZE] = {};
     ll revSize;
-    recv(socket,&revSize,sizeof(revSize),0);
-    recv(socket,table, revSize,0);
-    fprintf(stderr,"Table received \n");
-    fprintf(stderr, "Updating table...\n");
+    if(recv(socket,&revSize,sizeof(revSize),0)==-1){
+        perror("Error receiving the table size");
+        return false;
+    }
+    if(recv(socket,table,revSize,0) == -1){
+        perror("Error receiving the table");
+        return false;
+    }
+    perror("Table received");
     updateTable(table);
-    fprintf(stderr, "Table updated \n");
+    perror("Table updated");
     return true;
 }   
 
