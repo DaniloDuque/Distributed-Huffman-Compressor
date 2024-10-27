@@ -83,25 +83,45 @@ bool compress(int* codes, int socket) {
     fseek(fileW, 0, SEEK_SET);
     if(send(socket, &file_size , sizeof(file_size), 0) < 0){
         perror("Error al enviar el size");
+        fclose(fileW);
         return false;
     }
     printf("Bytes send of compressed part %lld\n", file_size);
 
     ll remainingBytes = file_size;
     ll totalSent = 0;
-    ssize_t bytesSent;
-    size_t totalSentInChunk = 0;
-    while (totalSentInChunk < bytesRead) {
-        bytesSent = send(socket, buffer + totalSentInChunk, bytesRead - totalSentInChunk, 0);
-        if (bytesSent == -1) {
-            perror("Error while sending file");
+    while (remainingBytes > 0) {
+        size_t bytesToRead = (remainingBytes < BUFFER_SIZE) ? remainingBytes : BUFFER_SIZE;
+        bytesRead = fread(buffer, 1, bytesToRead, fileW);
+
+        if (bytesRead <= 0) {
+            if (feof(fileW)) break;
+            perror("Error al leer el archivo comprimido para enviar");
             fclose(fileW);
             return false;
         }
-        totalSentInChunk += bytesSent;
+
+        size_t totalSentInChunk = 0;
+        while (totalSentInChunk < bytesRead) {
+            ssize_t bytesSent = send(socket, buffer + totalSentInChunk, bytesRead - totalSentInChunk, 0);
+            if (bytesSent == -1) {
+                perror("Error al enviar el archivo comprimido");
+                fclose(fileW);
+                return false;
+            }
+            totalSentInChunk += bytesSent;
+        }
+        totalSent += totalSentInChunk;
+        remainingBytes -= bytesRead;
     }
-    totalSent += totalSentInChunk;
-    remainingBytes -= bytesRead;
+
+    if (totalSent != file_size) {
+        fprintf(stderr, "Error: Se enviaron %lld bytes de %lld esperados\n", totalSent, file_size);
+        fclose(fileW);
+        return false;
+    }
+
+    fclose(fileW);
     
     // while(remainingBytes > 0){
     //     size_t bytesToRead = (remainingBytes < BUFFER_SIZE) ? remainingBytes : BUFFER_SIZE;
