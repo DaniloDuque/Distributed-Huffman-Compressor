@@ -46,7 +46,6 @@ void* sendRoutes(void* arg) {
     ll total_received=0;
     ssize_t bytes_received;
     uchar * buffer[BUFFER_SIZE];
-    
     lock(&cmp);
     while (total_received < partSize && 
            (bytes_received = recv(info->socket, buffer, BUFFER_SIZE, 0)) > 0) {

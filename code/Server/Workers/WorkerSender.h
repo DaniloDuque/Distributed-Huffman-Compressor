@@ -24,6 +24,10 @@ bool receive_file(int socket) {
         total_received += bytes_received;
         printf("Progress: %.2f%%\n", (float)total_received / file_size * 100);
     }
+    if(file_size!=total_received){
+        perror("Error: los bytes no coinciden");
+        return false;
+    }
     printf("File received and saved as %s\n", OUTPUT_FILE);
 
     fclose(file);
