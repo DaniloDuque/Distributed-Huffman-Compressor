@@ -58,6 +58,50 @@ bool compress(int* codes, int socket) {
     //     perror("Error al eliminar el archivo");
     //     return false;
     // }
+
+    if(remove(OUTPUT_FILE) != 0){
+        perror("Error al eliminar el archivo");
+        return false;
+    } 
+ 
+    // fileW = fopen(PATH_COMPRESS,buffer"rb");
+    // if(fileW == NULL){
+    //     perror("Error al abrir el archivo antes de enviar");
+    //     return false;
+    // }
+    // fseek(fileW,0,SEEK_END);
+    // ll file_size = ftell(fileW);
+    // fseek(fileW, 0, SEEK_SET);
+    // if(send(socket, file_size , sizeof(file_size), 0) < 0){
+    //     perror("Error al enviar el size");
+    //     return false;
+    // }
+    // ll remainingBytes = file_size;
+    // ll totalSent = 0;
+    // while(remainingBytes > 0){
+    //     size_t bytesToRead = (remainingBytes < BUFFER_SIZE) ? remainingBytes : BUFFER_SIZE;
+    //     size_t bytesRead = fread(buffer, 1, bytesToRead, fileW);
+        
+    //     if(bytesRead <= 0) {
+    //         if(feof(fileW)) break;  
+    //         perror("Error sending file");
+    //         return false;
+    //     }
+    //     ssize_t bytesSent = send(socket, buffer, bytesRead, 0);
+    //     if(bytesSent == -1) {
+    //         perror("Error while sending file");
+    //         return false;
+    //     }
+    //     totalSent += bytesSent;
+    //     remainingBytes -= bytesSent;
+    // }
+    // if(totalSent != file_size) {
+    //     fprintf(stderr, "Error: Sent %lld bytes of %lld expected\n", totalSent,file_size);
+    //     return false;
+    // }
+    // ll zeros = 7-bit;
+    // if(send(socket,zeros,sizeof(zeros),0) < 0){
+    //     perror("Error al enviar los 0's");
     
     return true;
 }
