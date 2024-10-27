@@ -46,6 +46,11 @@ bool compress(int* codes, int socket) {
     fclose(fileW);
     fclose(fileR);
 
+    if(remove(OUTPUT_FILE) != 0){
+        perror("Error al eliminar el archivo");
+        return false;
+    } 
+
     // fileW = fopen(PATH_COMPRESS,"rb");
     // if(fileW == NULL){
     //     perror("Error al abrir el archivo antes de enviar");
