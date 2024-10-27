@@ -2,7 +2,7 @@
 #define BYTE_COUNTER
 #include "WorkerSender.h"
 
-bool calc_frecuency(int socket){
+bool calc_frequency(int socket){
     char buffer[BUFFER_SIZE];
     size_t bytesRead;
     ll freq[MAX_SIZE] = {};

@@ -1,1 +1,888 @@
-AYER ME CASE CON MI QUERIDISIMO CHAT GPT, TE QUIERO GPT <3
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{listings} % Required for including code
+\usepackage{xcolor} 
+% Required to define colors for the code
+
+\title{Variable Compleja Cheat Sheet}
+\author{Danilo Duque, Emmanuel Rojas and Pablo Pérez}
+\date{October 2024}
+
+\lstset{
+  language=C++,                % Set language to C++
+  basicstyle=\ttfamily\footnotesize, % Set basic font style
+  keywordstyle=\color{violet},       % Set color for keywords to purple
+  commentstyle=\color{darkgreen},    % Set color for comments to dark green
+  stringstyle=\color{black},           % Set color for strings
+  numbers=left,                      % Display line numbers on the left
+  numberstyle=\tiny\color{gray},     % Set line number style
+  stepnumber=1,                      % Number every line
+  frame=single,                      % Frame the code block
+  breaklines=true,                   % Enable line breaking
+  tabsize=2,                         % Set tab size
+}
+
+\lstdefinestyle{mylststyle}{
+  language=C++,                % Set language to C++
+  basicstyle=\ttfamily\scriptsize,   % Set basic font style to tiny
+  keywordstyle=\color{violet},  % Set color for keywords to purple
+  commentstyle=\color{darkgreen}, % Set color for comments to dark green
+  stringstyle=\color{black},     % Set color for strings
+  numbers=left,                % Display line numbers on the left
+  numberstyle=\tiny\color{gray}, % Set line number style
+  stepnumber=1,                % Number every line
+  frame=single,                % Frame the code block
+  breaklines=true,             % Enable line breaking
+  tabsize=2,                   % Set tab size
+}
+
+
+% Define custom colors
+\definecolor{darkgreen}{rgb}{0.0, 0.5, 0.0}  % Dark green color
+
+\begin{document}
+
+\maketitle
+\section{Template}
+\begin{lstlisting}
+#include <bits/stdc++.h>
+using namespace std;
+
+#define SET(m, i) ((m) | (1ULL << (i)))
+#define TEST(m, i) ((m) & (1ULL << (i)))
+#define CLEAR(m, i) ((m) &~ (1ULL << (i)))
+#define DEBUG(n) cout<<#n<<" = "<<n<<'\n'
+#define CLEAN(arr) (memset(arr, 0, sizeof(arr)))
+#define ALL(v) (v).begin(), (v).end()
+#define vec vec
+#define snd second
+#define fst first
+#define ll long long
+const int MAX = 2e5+20;
+int t=1;
+
+void solve(){        
+    
+}
+
+int main(){
+    ios::sync_with_stdio(0);
+    cin.tie(0); cout.tie(0);
+    cin>>t;
+    while(t--){
+        solve();
+    }return 0;
+}
+\end{lstlisting}
+
+\newpage
+
+\section{Data Structures}
+\subsection{Segment Tree}
+\begin{lstlisting}
+#define oper min
+#define NEUT INF
+
+struct STree { 
+    vec<int> st;int n;
+    STree(int n): st(4*n+5,NEUT), n(n) {}
+    void init(int k, int s, int e, int *a){
+	    if(s+1==e){st[k]=a[s];return;}
+	    int m=(s+e)>>1;
+	    init(2*k,s,m,a);init(2*k+1,m,e,a);
+	    st[k]=oper(st[2*k],st[2*k+1]);
+    }
+
+    void upd(int k, int s, int e, int p, int v){
+	    if(s+1==e){st[k]=v;return;}
+	    int m=(s+e)>>1;
+	    (p<m)? upd(2*k,s,m,p,v) : upd(2*k+1,m,e,p,v);
+	    st[k]=oper(st[2*k],st[2*k+1]);
+    }
+
+    int query(int k, int s, int e, int a, int b){
+	    if(s>=b||e<=a)return NEUT;
+	    if(s>=a&&e<=b)return st[k];
+	    int m=(s+e)>>1;
+	    return oper(query(2*k,s,m,a,b),query(2*k+1,m,e,a,b));
+    }
+
+    void init(int *a){init(1,0,n,a);}
+    void upd(int p, int v){upd(1,0,n,p,v);}
+    int query(int a, int b){return query(1,0,n,a,b);}
+}; // usage: STree rmq(n);rmq.init(x);rmq.upd(i,v);rmq.query(s,e);
+\end{lstlisting}
+
+
+\newpage
+
+
+\subsection{Fenwick Tree}
+\begin{lstlisting}
+int N, tree[1<<18];
+
+// add v to value at x
+void set(int x, int v){
+    while(x<=N) tree[x] += v, x += (x&-x);
+}
+
+// get cumulative sum up to and including x
+int get(int x){
+    int r = 0;
+    while(x) r+=tree[x], x -= x&-x;
+    return r;
+}
+
+// get largest value with cumulative sum less than or equal to x
+int getIDX(int x){
+    int idx = 0, msk = N;
+    while(msk && idx < N){
+        int t = idx + msk;
+        if(x >= tree[t]) idx = t, x -= tree[t];
+        msk >>= 1;
+    }return idx;
+}
+\end{lstlisting}
+
+\subsection{Sparse Table}
+\begin{lstlisting}
+#define fun min
+int spt[K][1<<K], n; // -> 2^K > n
+
+void init(int *a){
+    for(int i = 0; i<n;) spt[0][i] = a[i++];
+    for(int k = 1; k<K; ++k)
+        for(int i = 0; i<=n-(1<<k); ++i)
+            spt[k][i] = fun(spt[k-1][i], spt[k-1][i+(1<<(k-1))]);
+}
+
+int query(int i, int j){
+    int k = 31-__builtin_clz(j-i);
+    return fun(spt[k][i], spt[k][j-(1<<k)]);
+}
+\end{lstlisting}
+\newpage
+\subsection{Suffix Array}
+\begin{lstlisting}
+#define RB(x) (x<n?r[x]:0)
+void csort(vec<int>& sa, vec<int>& r, int k){
+	int n=sa.size();
+	vec<int> f(max(255,n),0),t(n);
+	fore(i,0,n)f[RB(i+k)]++;
+	int sum=0;
+	fore(i,0,max(255,n))f[i]=(sum+=f[i])-f[i];
+	fore(i,0,n)t[f[RB(sa[i]+k)]++]=sa[i];
+	sa=t;
+}
+vec<int> constructSA(string& s){ // O(n logn)
+	int n=s.size(),rank;
+	vec<int> sa(n),r(n),t(n);
+	fore(i,0,n)sa[i]=i,r[i]=s[i];
+	for(int k=1;k<n;k*=2){
+		csort(sa,r,k);csort(sa,r,0);
+		t[sa[0]]=rank=0;
+		fore(i,1,n){
+			if(r[sa[i]]!=r[sa[i-1]]||RB(sa[i]+k)!=RB(sa[i-1]+k))rank++;
+			t[sa[i]]=rank;
+		}
+		r=t;
+		if(r[sa[n-1]]==n-1)break;
+	}
+	return sa;
+}
+\end{lstlisting}
+\newpage
+
+
+\section{PBDS}
+
+\subsection{Ordered Map and Ordered Set from Policy-Based Data Structures (PBDS)}
+
+\subsubsection{Basic Setup}
+
+To define both the ordered map and the ordered set using PBDS, include the necessary headers and set up the structures as follows:\\
+
+\begin{lstlisting}
+#include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+using namespace __gnu_pbds;
+using namespace std;
+
+// Define the ordered_map type
+template <typename Key, typename Value>
+using ordered_map = tree<Key, Value, less<Key>, rb_tree_tag, tree_order_statistics_node_update>;
+
+// Define the ordered_set type
+template <typename T>
+using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+\end{lstlisting}
+
+\textbf{Explanation}
+\begin{itemize}
+    \item \textbf{Ordered Map}
+    \begin{itemize}
+        \item \textbf{Key}: The type of keys in the map.
+        \item \textbf{Value}: The type of values associated with the keys.
+        \item \textbf{less$<$Key$>$}: Defines the sorting order of the keys (ascending in this case).
+    \end{itemize}
+    \item \textbf{Ordered Set}
+    \begin{itemize}
+        \item \textbf{T}: The type of elements in the set.
+        \item \textbf{null\_type}: We are not mapping keys to values, so this is set to \texttt{null\_type}.
+        \item \textbf{less$<$T$>$}: Defines the sorting order; in this case, it's ascending.
+    \end{itemize}
+    \item \textbf{Common Features}
+    \begin{itemize}
+        \item \textbf{rb\_tree\_tag}: Specifies that the data structure is based on a red-black tree.
+        \item \textbf{tree\_order\_statistics\_node\_update}: Ensures that the tree supports order statistics.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Basic Operations}
+
+\begin{itemize}
+    \item \textbf{Insertion} \\
+    To insert elements into the ordered\_set or key-value pairs into the ordered\_map:
+    \begin{lstlisting}
+    // Ordered Set
+    ordered_set<int> os;
+    os.insert(5);
+    os.insert(1);
+    os.insert(10);
+
+    // Ordered Map
+    ordered_map<int, string> om;
+    om[5] = "apple";
+    om[1] = "banana";
+    om[10] = "cherry";
+    \end{lstlisting}
+
+    \item \textbf{Deletion} \\
+    To remove elements from the ordered\_set or key-value pairs from the ordered\_map:
+    \begin{lstlisting}
+    os.erase(5);  // Ordered Set
+    om.erase(5);  // Ordered Map
+    \end{lstlisting}
+
+    \item \textbf{Finding the k-th smallest element/key} \\
+    You can find the k-th smallest element in the ordered\_set or the k-th smallest key in the ordered\_map using the \texttt{find\_by\_order} method:
+    \begin{lstlisting}
+    int k = 1;
+    
+    // Ordered Set
+    auto it_set = os.find_by_order(k); // Returns an iterator to the k-th smallest element (0-based index).
+    if (it_set != os.end()) {
+        cout << "The " << k << "-th smallest element is " << *it_set << endl;
+    }
+
+    // Ordered Map
+    auto it_map = om.find_by_order(k); // Returns an iterator to the k-th smallest key (0-based index).
+    if (it_map != om.end()) {
+        cout << "The " << k << "-th smallest key is " << it_map->first << " with value " << it_map->second << endl;
+    }
+    \end{lstlisting}
+    \newpage
+    \item \textbf{Finding the number of elements/keys less than a given value} \\
+    To find the number of elements in the ordered\_set or keys in the ordered\_map that are less than a specific value, use \texttt{order\_of\_key}:
+    \begin{lstlisting}
+    int value = 6;
+    
+    // Ordered Set
+    int count_set = os.order_of_key(value); // Number of elements strictly less than 6
+    cout << "Number of elements less than " << value << " is " << count_set << endl;
+
+    // Ordered Map
+    int count_map = om.order_of_key(value); // Number of keys strictly less than 6
+    cout << "Number of keys less than " << value << " is " << count_map << endl;
+    \end{lstlisting}
+\end{itemize}
+
+
+\subsection{Trie from Policy-Based Data Structures (PBDS) in C++}
+
+This section explains how to set up and use a \texttt{trie} from Policy-Based Data Structures (PBDS) in C++. The \texttt{trie} is useful for prefix-based searches, such as autocomplete or dictionary-like applications.
+
+\subsubsection{Basic Setup and Operations}
+
+To define and use a \texttt{trie}, include the necessary headers and set up the structure as follows:
+
+\begin{lstlisting}
+#include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/trie_policy.hpp>
+using namespace __gnu_pbds;
+using namespace std;
+
+template <typename Key, typename Value = null_type>
+using trie = trie<Key, Value, trie_string_access_traits<>, pat_trie_tag, trie_prefix_search_node_update>;
+\end{lstlisting}
+
+\textbf{Explanation:}
+\begin{itemize}
+    \item \textbf{Key}: The type of elements in the \texttt{trie} (e.g., \texttt{string}).
+    \item \textbf{Value}: Optional; the type of values associated with keys (\texttt{null\_type} if not used).
+    \item \textbf{trie\_string\_access\_traits}: Manages navigation through characters.
+    \item \textbf{pat\_trie\_tag}: Optimizes the \texttt{trie} as a PATRICIA trie for space efficiency.
+    \item \textbf{trie\_prefix\_search\_node\_update}: Supports efficient prefix-based searches.
+\end{itemize}
+
+\subsubsection{Basic Operations}
+
+\textbf{Insertion}:
+\begin{lstlisting}
+trie<string> t;
+t.insert("apple");
+t.insert("banana");
+\end{lstlisting}
+
+\textbf{Deletion}:
+\begin{lstlisting}
+t.erase("banana");
+\end{lstlisting}
+
+\textbf{Prefix Search}:
+\begin{lstlisting}
+auto range = t.prefix_range("ap");
+for (auto it = range.first; it != range.second; ++it)
+    cout << *it << endl;
+\end{lstlisting}
+
+\textbf{Checking Existence}:
+\begin{lstlisting}
+if (t.find("apple") != t.end()) {
+    cout << "'apple' exists" << endl;
+}
+\end{lstlisting}
+
+
+
+\section{Graphs}
+
+\subsection{Dijkstra}
+\begin{lstlisting}
+vec<pair<int, int>> G[MAX];
+int dp[MAX];
+
+void Dijkstra(int st){
+    memset(dp, -1, sizeof(dp));
+    priority_queue<pair<int, int>> pq;
+    dp[st] = 0; pq.push({0, st});
+    while(!pq.empty()){
+        st = pq.top().second; int w = -pq.top().first; pq.pop(); 
+        if(dp[st] != w) continue;
+        for(auto &p : G[st]){
+            int nxt = p.first; int w = p.second;
+            if(dp[nxt] < 0 || dp[st] + w < dp[nxt])
+                dp[nxt] = dp[st]+w, pq.emplace(-dp[nxt], nxt);
+        }
+    }
+}
+\end{lstlisting}
+\newpage
+\subsection{BFS}
+\begin{lstlisting}
+vec<int> G[MAX];
+
+void BFS(int st){
+    bitset<MAX> v; queue<int> bfs;
+    bfs.push(st); v.set(st);
+    while(!bfs.empty()){
+        st = bfs.front(), bfs.pop();
+        for(int &nx : G[st])
+            if(!v.test(nx)) bfs.push(nx), v.set(nx);
+    }
+}
+\end{lstlisting}
+
+\subsection{Union Find}
+\begin{lstlisting}
+struct UnionFind{
+    vec<int> uf;
+    void init(int n){uf.assign(n, -1);}
+    int Find(int i){return (uf[i]==-1)? i : uf[i] = Find(uf[i]);}
+    bool Union(int i, int j){
+        bool e = Find(i)==Find(j);
+        if(!e) uf[Find(i)] = Find(j);
+        return e;
+    }
+};
+\end{lstlisting}
+
+
+\subsection{Floyd Warshall}
+\begin{lstlisting}
+int G[MAX][MAX], n;
+
+void FW(){
+    for(int k = 0; k<n; ++k)
+        for(int i = 0; i<n; ++i)
+            if(G[i][k] < INF)
+                for(int j = 0; j<n; ++j)
+                    if(G[k][j] < INF) G[i][j] = min(G[i][j], G[i][k] + G[k][j]);
+} 
+\end{lstlisting}
+\newpage
+\subsection{Bellman Ford}
+\begin{lstlisting}
+int n, dp[MAX];
+vec<pair<int, int>> G[MAX];
+
+void BF(int st){
+    
+    memset(dp, INF, sizeof(dp)); dp[st] = 0;
+    for(int k = 0; k<n; ++k)
+        for(int i = 0; i<n; ++i)
+            if(dp[i] != INF)
+                for(auto &t : G[i])
+                    dp[t.first] = min(dp[t.first], dp[i] + t.second);
+
+    for(int i = 0; i<n; ++i)
+        if(dp[i] != INF)
+            for(auto &p : G[i])
+                if(dp[p.first] > dp[i] + p.second) //negative cycle exists
+
+}
+\end{lstlisting}
+
+\subsection{Khan}
+\begin{lstlisting}
+vec<int> G[MAX], topSort;
+int in_deg[MAX], n;
+
+bool Khan(){
+    queue<int> Q;
+    for(int i = 0; i<n; ++i) for(int &j : G[i]) ++in_deg[j];
+    for(int i = 0; i<n; ++i) if(!in_deg[i]) Q.push(i);
+    while(!Q.empty()){
+        int c = Q.front(); Q.pop();
+        topSort.push_back(c);
+        for(int &j : G[c]) if(!(--in_deg[j])) Q.push(j);
+    }return topSort.size() == n;
+}
+\end{lstlisting}
+
+\newpage
+\subsection{Kruskal}
+\begin{lstlisting}
+#define f first
+#define s second
+
+int uf[MAX];
+vec<pair<int, pair<int, int>>> edgs; //(cost (u, v))
+
+int Find(int i){return (uf[i]<0)? i : uf[i] = Find(uf[i]);}
+
+bool Union(int i, int j){
+    i = Find(i), j = Find(j);
+    if(i == j) return 0;
+    if(uf[i]>uf[j]) swap(i, j);
+    uf[i]+=uf[j], uf[j]=i;
+    return 1;
+}
+
+int kruskal(){
+    sort(edgs.begin(), edgs.end());
+    memset(uf, -1, sizeof(uf));
+    int mst = 0;
+    for(auto &p : edgs) if(Union(p.s.f, p.s.s)) mst += p.f;
+    return mst;
+}
+\end{lstlisting}
+
+\subsection{Prim}
+\begin{lstlisting}
+int n;
+vec<pair<int, int>> G[MAX];
+bitset<MAX> tkn;
+priority_queue<pair<int, int>> pq;
+
+void process(int v){
+    tkn.set(v);
+    for(auto &e : G[v]) if(!tkn.test(e.second)) pq.emplace(-e.first, e.second);
+}
+
+int prim(){
+    tkn.reset(); process(0);
+    int mst = 0;
+    while(!pq.empty()){
+        int c = pq.top().first, v = pq.top().second; pq.pop();
+        if(!tkn.test(v)) mst -= c, process(v);
+    }return mst;
+}
+\end{lstlisting}
+\newpage
+
+\subsection{Tarjan}
+\begin{lstlisting}
+int dfn[MAX], low[MAX], scc[MAX], idx, color, instk[MAX];
+vec<int> G[MAX];
+stack<int> st;
+
+void Tarjan(int u){
+    int v;
+    dfn[u]=low[u]=++idx;
+    st.push(u); instk[u]=1;
+    for(int &v : G[u]){
+        if(!dfn[v]){
+            Tarjan(v);
+            low[u]=min(low[u], low[v]);
+        }else if(instk[v]) low[u]=min(low[u], dfn[v]);
+    }
+    /* Check SCC here
+    if(dfn[u] == low[u]) {
+        ++color;
+        do {
+            v = st.top(), instk[v]=0;
+            st.pop();
+            scc[v] = color;
+        } while(v!=u);
+    } */
+}
+
+int scc() {
+    CLEAN(dfn); CLEAN(low); CLEAN(scc); idx=color=0;
+    CLEAN(instk); while (!st.empty()) st.pop();
+    for(int i=1; i<=n; ++i) if(!dfn[i]) Tarjan(i);
+    return color;
+}
+\end{lstlisting}
+\newpage
+\subsection{Hierholzer}
+\begin{lstlisting}
+vec<int> G[MAX];
+int n, in_deg[MAX], out_deg[MAX];
+stack<int> path;
+
+bool Eulerian(){
+    int stV = 0, endV = 0;
+    for(int i = 0; i<n; ++i){
+        if(abs(in_deg[i]-out_deg[i]) > 1) return 0;
+        stV+=(out_deg[i]-in_deg[i]==1);
+        endV+=(in_deg[i]-out_deg[i]==1);
+    }return !(stV+endV) || (stV+endV == 2);
+}
+
+int stV(){
+    int stV = 0;
+    for(int i = 0; i<n; ++i){
+        if(out_deg[i]-in_deg[i]==1) return i;
+        if(out_deg[i]) stV = i;
+    }return stV;
+}
+
+void dfs(int i){
+    while(out_deg[i]){
+        int nx = G[i].back(); G[i].pop_back();
+        --out_deg[i];
+        dfs(nx);
+    }path.push(i);
+}
+
+//if graph has eulerian path or circuit it will be stored in path
+void FindEulerian(){
+    for(int i = 0; i<n; ++i){
+        out_deg[i]+=G[i].size();
+        for(int &j : G[i]) ++in_deg[j];
+    }
+    if(!Eulerian()) return;
+    dfs(stV());
+}
+\end{lstlisting}
+
+\newpage
+\section{Math}
+\subsection{Sieve}
+\begin{lstlisting}
+int sv[MAX]; //-1 if prime, trivial divisor if not
+
+void init(){
+    memset(sv, -1, sizeof(sv));
+    for(int i = 2; i<MAX; ++i)
+        if(sv[i] < 0)
+            for(int j = 1LL*i*i; j<MAX; j+=i) sv[j] = i;
+
+}
+
+map<int, int> factorize(int n){
+    map<int, int> r;
+    while(sv[n] >= 0) ++r[sv[n]], n/=sv[n];
+    if(n>1) r[n]++;
+    return r;
+}
+\end{lstlisting}
+
+\subsection{Fast Fourier Transform}
+\begin{lstlisting}
+const double PI = 3.141592653589793238460;
+typedef std::complex<long double> cd;
+
+void fft(vec<cd> & a, bool invert) {
+    int n = a.size();
+    if (n == 1)
+        return;
+
+    vec<cd> a0(n / 2), a1(n / 2);
+    for (int i = 0; 2 * i < n; i++) {
+        a0[i] = a[2*i];
+        a1[i] = a[2*i+1];
+    }
+    fft(a0, invert);
+    fft(a1, invert);
+
+    double ang = 2 * PI / n * (invert ? -1 : 1);
+    cd w(1), wn(cos(ang), sin(ang));
+    for (int i = 0; 2 * i < n; i++) {
+        a[i] = a0[i] + w * a1[i];
+        a[i + n/2] = a0[i] - w * a1[i];
+        if (invert) {
+            a[i] /= 2;
+            a[i + n/2] /= 2;
+        }
+        w *= wn;
+    }
+}
+\end{lstlisting}
+
+
+
+\section{Dynamic Programming}
+
+\subsection{Kadane}
+\begin{lstlisting}
+int n, arr[MAX];
+
+int Kadane(){
+    int s = 0, mxs = 0;
+    for(int i = 0; i<n;){
+        s += arr[i++];
+        mxs = max(mxs, s);
+        s = max(s, 0);
+    }return mxs;
+}
+\end{lstlisting}
+\subsection{Longest Common Substring}
+\begin{lstlisting}
+int dp[MAX][MAX];
+
+string LCS(string &a, string &b){
+    for(int i = a.size()-1; i>=0; --i)
+        for(int j = b.size()-1; j>=0; --j)
+            dp[i][j] = (a[i] == b[j])? 1 + dp[i+1][j+1] : max(dp[i+1][j], dp[i][j+1]);
+    string rslt = "";
+    for(int i = 0, j = 0; i < a.size() && j < b.size();)
+        (a[i] == b[j])? rslt += a[i++], ++j : (dp[i+1][j] > dp[i][j+1])?  ++i : ++j;
+    return rslt;
+}
+\end{lstlisting}
+\subsection{Longest increasing Sequence}
+\begin{lstlisting}
+int n, arr[MAX], lis[MAX], idx[MAX], path[MAX];
+
+void printLIS(int end){
+    if(end == -1) return;
+    printLIS(path[end]);
+    printf("%d ", end);
+}
+
+int LIS(){
+    int end = 0, c = 0;
+    for(int i = 0; i<n; i++){
+        int index = lower_bound(lis, lis+c, arr[i]) - lis;
+        lis[index] = arr[i];
+        idx[index] = i;
+        path[i] = (index)? idx[index-1]: -1;
+        if(index == c) c++, end = i;
+    }return c;
+}
+\end{lstlisting}
+
+\subsection{Subset Sum}
+\begin{lstlisting}
+int dp[MAX][MAX], n;
+
+void subsetSum() {
+    memset(dp, 0, sizeof(dp));
+    for(int i=1; i<MAX; ++i) dp[i][0] = 1;
+    for(int i=1; i<MAX; ++i) 
+        for(int j=1; j<MAX; ++j)
+            dp[i][j] = (j<nums[i-1])? dp[i-1][j] : dp[i-1][j] || dp[i-1][j-nums[i-1]];
+}
+\end{lstlisting}
+
+\section{Other}
+
+\subsection{Most Significant Bit}
+\begin{lstlisting}
+31-__builtin_clz(x)
+\end{lstlisting}
+
+\subsection{Least Significant Bit}
+\begin{lstlisting}
+x&-x
+\end{lstlisting}
+
+\subsection{Population Count}
+\begin{lstlisting}
+__builtin_popcount(x)
+\end{lstlisting}
+
+\subsection{Count Trailing Zeros}
+\begin{lstlisting}
+__builtin_ctz(x)
+\end{lstlisting}
+
+\subsection{Count Leading Zeros}
+\begin{lstlisting}
+__builtin_clz(x)
+\end{lstlisting}
+
+\subsection{Make prefix sum array}
+\begin{lstlisting}
+partial_sum(arr, arr+n, arr)
+\end{lstlisting}
+
+\subsection{Remove contiguous groups of equal elements}
+\begin{lstlisting}
+v.erase(ALL(v), v.end());
+\end{lstlisting}
+
+\newpage
+\subsection{Flows}
+\subsection{Dinic}
+\begin{lstlisting}[style=mylststyle]
+// Min cut: nodes with dist>=0 vs nodes with dist<0
+// Matching MVC: left nodes with dist<0 + right nodes with dist>0
+struct Dinic {
+    int nodes, src, dst;
+    vec<int> dist, q, work;
+    struct edge {
+        int to, rev;
+        long long f, cap;
+    };
+    vec<vec<edge>> g;
+    Dinic(int x) : nodes(x), g(x), dist(x), q(x), work(x) {}
+    void add_edge(int s, int t, long long cap) {
+        g[s].push_back({t, static_cast<int>(g[t].size()), 0, cap});
+        g[t].push_back({s, static_cast<int>(g[s].size()) - 1, 0, 0});
+    }
+    bool dinic_bfs() {
+        fill(dist.begin(), dist.end(), -1);
+        dist[src] = 0;
+        int qt = 0; 
+        q[qt++] = src;
+        for (int qh = 0; qh < qt; qh++) {
+            int u = q[qh];
+            for (int i = 0; i < static_cast<int>(g[u].size()); i++) {
+                edge &e = g[u][i];
+                int v = e.to;
+                if (dist[v] < 0 && e.f < e.cap) {
+                    dist[v] = dist[u] + 1;
+                    q[qt++] = v;
+                }
+            }
+        }return dist[dst] >= 0;
+    }
+    long long dinic_dfs(int u, long long f) {
+        if (u == dst) return f;
+        for (int &i = work[u]; i < static_cast<int>(g[u].size()); i++) {
+            edge &e = g[u][i];
+            if (e.cap <= e.f) continue;
+            int v = e.to;
+            if (dist[v] == dist[u] + 1) {
+                long long df = dinic_dfs(v, min(f, e.cap - e.f));
+                if (df > 0) {
+                    e.f += df;
+                    g[v][e.rev].f -= df;
+                    return df;
+                }
+            }
+        }return 0;
+    }
+    long long max_flow(int _src, int _dst) {
+        src = _src; 
+        dst = _dst;
+        long long result = 0;
+        while (dinic_bfs()) {
+            fill(work.begin(), work.end(), 0);
+            while (long long delta = dinic_dfs(src, INF)) {
+                result += delta;
+            }
+        }return result;
+    }
+};
+
+\end{lstlisting}
+\newpage
+
+
+\subsection{Min cost max flow}
+\begin{lstlisting}[style=mylststyle]
+typedef ll tf;
+typedef ll tc;
+const tf INFFLOW = 1e9;
+const tc INFCOST = 1e9;
+struct MCF {
+    int n;
+    vec<tc> prio, pot;
+    vec<tf> curflow;
+    vec<int> prevedge, prevnode;
+    priority_queue<pair<tc, int>, vec<pair<tc, int>>, greater<pair<tc, int>>> q;
+    struct edge {
+        int to, rev;
+        tf f, cap;
+        tc cost;
+    };
+    vec<vec<edge>> g;
+    MCF(int n) : n(n), prio(n), curflow(n), prevedge(n), prevnode(n), pot(n), g(n) {}
+    void add_edge(int s, int t, tf cap, tc cost) {
+        g[s].push_back({t, (int)g[t].size(), 0, cap, cost});
+        g[t].push_back({s, (int)g[s].size() - 1, 0, 0, -cost});
+    }
+    pair<tf, tc> get_flow(int s, int t) {
+        tf flow = 0;
+        tc flowcost = 0;
+        while (true) {
+            q.push({0, s});
+            fill(ALL(prio), INFCOST);
+            prio[s] = 0;
+            curflow[s] = INFFLOW;
+            while (!q.empty()) {
+                auto cur = q.top();
+                tc d = cur.first;
+                int u = cur.second;
+                q.pop();
+                if (d != prio[u]) continue;
+                for (int i = 0; i < (int)g[u].size(); ++i) {
+                    edge &e = g[u][i];
+                    int v = e.to;
+                    if (e.cap <= e.f) continue;
+                    tc nprio = prio[u] + e.cost + pot[u] - pot[v];
+                    if (prio[v] > nprio) {
+                        prio[v] = nprio;
+                        q.push({nprio, v});
+                        prevnode[v] = u;
+                        prevedge[v] = i;
+                        curflow[v] = min(curflow[u], e.cap - e.f);
+                    }
+                }
+            }if (prio[t] == INFCOST) break;
+            for (int i = 0; i < n; ++i) pot[i] += prio[i];
+            tf df = min(curflow[t], INFFLOW - flow);
+            flow += df;
+            for (int v = t; v != s; v = prevnode[v]) {
+                edge &e = g[prevnode[v]][prevedge[v]];
+                e.f += df;
+                g[v][e.rev].f -= df;
+                flowcost += df * e.cost;
+            }
+        }return {flow, flowcost};
+    }
+};
+\end{lstlisting}
+
+
+
+
+
+\end{document}
