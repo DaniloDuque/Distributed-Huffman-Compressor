@@ -6,7 +6,7 @@
 extern uchar dto[MAX_SIZE*2];
 
 void* sendRoutes(void* arg) {
-    int socket=(int) arg;
+    int socket= *((int*) arg);
     int * exitCode = (int *) malloc(sizeof(int));
     if(send(socket, (char*)dto, 2*MAX_SIZE*sizeof(uchar), 0) < 0){
         perror("Error sending the code table");
