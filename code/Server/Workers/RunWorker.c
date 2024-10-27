@@ -39,8 +39,8 @@ int main() {
         perror("Error recibing the code tables");
         return 1;
     }
-    for(int i=0, j=0; i<2*MAX_SIZE; i+=2, j++){
-        if(codes[j]){
+    for(int i=0, j=0; i<2*MAX_SIZE; i+=2, ++j){
+        if(codes[i]){
             displayRoute(j, codes[i], codes[i+1]);
         }
     }

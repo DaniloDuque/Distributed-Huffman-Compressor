@@ -29,10 +29,4 @@ void displayRoute(int asc, int len, int msk){
     puts("");
 }
 
-char* toString(int len, int msk){
-    char* r = (char*)malloc(len*sizeof(char));
-    for(int i = 0; i<len; ++i) r[i]=(bool)TEST(msk, i)+'0';
-    return r;
-}
-
 #endif
