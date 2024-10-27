@@ -57,6 +57,11 @@ bool sendCompress(int socket) {
     }    
     fclose(fileL);
     
+    if(remove(PATH_COMPRESS) != 0) {
+        perror("Error al eliminar el archivo");
+        return false;
+    }
+
     return true;
 }
 

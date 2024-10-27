@@ -11,8 +11,8 @@
 #include <errno.h>
 #include <stdbool.h>
 
-#define IP "2.tcp.ngrok.io"                            
-#define NGROK_PORT 13786
+#define IP "0.tcp.ngrok.io"                            
+#define NGROK_PORT 11198
 #define BUFFER_SIZE (1<<14)
 #define OUTPUT_FILE "received_file_part"
 #define ll long long

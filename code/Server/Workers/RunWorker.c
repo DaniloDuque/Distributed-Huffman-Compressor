@@ -48,7 +48,8 @@ int main() {
         perror("Error compressing the file");
         return 1;
     }
-    while(1);
+    int ack;
+    recv(server_socket,&ack,sizeof(ack),0);
     close(server_socket);
     return 0;
 }
