@@ -1,5 +1,11 @@
 #include "ByteCounter.h"
 
+void displayRoute(int asc, int len, int msk){
+    printf("Character: %c  Length: %d  Route: ", asc, len);
+    for(int i = 0; i<len; ++i) printf("%u", (bool)TEST(msk, i));
+    puts("");
+}
+
 int main() {
     int server_socket, client_socket;
     struct sockaddr_in server_addr, client_addr;
@@ -39,7 +45,7 @@ int main() {
         return 1;
     }
     for(int i=0; i<2*MAX_SIZE; i+=2){
-        printf("%d %d\n", codes[i], codes[i+1]);
+        displayRoute(i,codes[i],codes[i+1]);
     }
     close(server_socket);
     return 0;
