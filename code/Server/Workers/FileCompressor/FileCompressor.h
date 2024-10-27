@@ -4,7 +4,6 @@
 #include "../util.h"
 
 bool compress(int* codes, int socket) {
-    
     int n = MAX_SIZE*2;
     ll contBits=0;
     int byte=0;
@@ -50,8 +49,8 @@ bool compress(int* codes, int socket) {
         perror("Error al eliminar el archivo");
         return false;
     } 
-
-    // fileW = fopen(PATH_COMPRESS,"rb");
+ 
+    // fileW = fopen(PATH_COMPRESS,buffer"rb");
     // if(fileW == NULL){
     //     perror("Error al abrir el archivo antes de enviar");
     //     return false;
