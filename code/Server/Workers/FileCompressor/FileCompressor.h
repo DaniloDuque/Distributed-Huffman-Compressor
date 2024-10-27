@@ -67,11 +67,11 @@ bool compress(int* codes, int socket) {
     fseek(fileW,0,SEEK_END);
     ll file_size = ftell(fileW);
     fseek(fileW, 0, SEEK_SET);
-    if(send(socket, file_size , sizeof(file_size), 0) < 0){
+    if(send(socket, &file_size , sizeof(file_size), 0) < 0){
         perror("Error al enviar el size");
         return false;
     }
-    printf("Bytes send of compressed part %ll", file_size);
+    printf("Bytes send of compressed part %lld", file_size);
     // ll remainingBytes = file_size;
     // ll totalSent = 0;
     // while(remainingBytes > 0){
