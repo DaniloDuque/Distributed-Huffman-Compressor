@@ -50,6 +50,7 @@ char* mskToString(int start, int msk, int len, char * r){
     return r;
 }
 
+/*
 //ascii-route/
 char* toString(route* r, int asc){
     int digits = log10(asc);
@@ -69,6 +70,7 @@ char* toString(route* r, int asc){
     st[digits+2+r->len]='\0';
     return st;
 }
+*/
 
 void RecRoutes(node* root, int lvl, route r, route** routes) {
     if (!root) return;
