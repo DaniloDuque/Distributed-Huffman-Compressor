@@ -144,7 +144,7 @@ bool compress(int* codes, int socket) {
         fprintf(stderr, "Error: Sent %lld bytes of %lld expected\n", totalSent,file_size);
         return false;
     }   
-    fclose(file_size);
+    fclose(fileW);
     // if(remove(PATH_COMPRESS) != 0) {
     //     perror("Error al eliminar el archivo");
     //     return false;
