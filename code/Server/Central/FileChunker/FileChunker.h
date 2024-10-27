@@ -119,8 +119,7 @@ bool splitFile(splitFileDTO * sp) {
             flag = false;
             fprintf(stderr, "Hilo %d peto\n",i);
         }
-    }
-    return flag;
+    }return flag;
 }
 
 #endif

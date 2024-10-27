@@ -1,5 +1,6 @@
 #include "util.h"
 #include "FileChunker/FileChunker.h"
+#include "RouteFinder.h"
 
 client_info info[max_client];
 ll freqTable[MAX_SIZE];
@@ -7,6 +8,7 @@ mutex keys[MAX_SIZE];
 mutex matex = PTHREAD_MUTEX_INITIALIZER;
 
 int main() {
+
     int server_socket, client_socket, n, cont = 0;
     struct sockaddr_in server_addr, client_addr;
     socklen_t client_len = sizeof(client_addr);
@@ -53,9 +55,7 @@ int main() {
         return 1;
     }
 
-    for(int i = 0; i < MAX_SIZE; i++){
-        printf("%c %lld\n", i, freqTable[i]);   
-    }
+    route ** routes = routeFinder(freqTable);
 
     close(server_socket);
     return 0;
