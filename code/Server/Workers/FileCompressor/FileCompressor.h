@@ -40,15 +40,23 @@ bool compress(int* codes, int socket) {
                 }
             }
         }
-        if(compressPos > 0) {
-            fwrite(cbuffer, 1, compressPos, fileW);
+        if (fwrite(cbuffer, 1, compressPos, fileW) != compressPos) {
+            perror("Error al escribir en el archivo comprimido");
+            fclose(fileW);
+            fclose(fileR);
+            return false;
         }
     }
     
     cbuffer[0] = byte;
-    cbuffer[1] = (bit+1)%8;
-    fwrite(cbuffer, 1, 2, fileW);
-    
+    cbuffer[1] = 7 - bit;
+    if (fwrite(cbuffer, 1, 2, fileW) != 2) {
+        perror("Error al escribir los bits finales en el archivo comprimido");
+        fclose(fileW);
+        fclose(fileR);
+        return false;
+    }
+
     fclose(fileW);
     fclose(fileR);
     
@@ -62,38 +70,60 @@ bool compress(int* codes, int socket) {
         perror("Error al abrir el archivo antes de enviar");
         return false;
     }
+
     fseek(fileW,0,SEEK_END);
     ll file_size = ftell(fileW);
+
+    if (file_size == -1) {
+        perror("Error al calcular el tamaño del archivo");
+        fclose(fileW);
+        return false;
+    }
+
     fseek(fileW, 0, SEEK_SET);
     if(send(socket, &file_size , sizeof(file_size), 0) < 0){
         perror("Error al enviar el size");
         return false;
     }
     printf("Bytes send of compressed part %lld\n", file_size);
-    
+
     ll remainingBytes = file_size;
     ll totalSent = 0;
-    while(remainingBytes > 0){
-        size_t bytesToRead = (remainingBytes < BUFFER_SIZE) ? remainingBytes : BUFFER_SIZE;
-        size_t bytesRead = fread(buffer, 1, bytesToRead, fileW);
-        
-        if(bytesRead <= 0) {
-            if(feof(fileW)) break;  
-            perror("Error sending file");
-            return false;
-        }
-        ssize_t bytesSent = send(socket, buffer, bytesRead, 0);
-        if(bytesSent == -1) {
+    ssize_t bytesSent;
+    size_t totalSentInChunk = 0;
+    while (totalSentInChunk < bytesRead) {
+        bytesSent = send(socket, buffer + totalSentInChunk, bytesRead - totalSentInChunk, 0);
+        if (bytesSent == -1) {
             perror("Error while sending file");
+            fclose(fileW);
             return false;
         }
-        totalSent += bytesSent;
-        remainingBytes -= bytesSent;
+        totalSentInChunk += bytesSent;
     }
-    if(totalSent != file_size) {
-        fprintf(stderr, "Error: Sent %lld bytes of %lld expected\n", totalSent,file_size);
-        return false;
-    }   
+    totalSent += totalSentInChunk;
+    remainingBytes -= bytesRead;
+    
+    // while(remainingBytes > 0){
+    //     size_t bytesToRead = (remainingBytes < BUFFER_SIZE) ? remainingBytes : BUFFER_SIZE;
+    //     size_t bytesRead = fread(buffer, 1, bytesToRead, fileW);
+        
+    //     if(bytesRead <= 0) {
+    //         if(feof(fileW)) break;  
+    //         perror("Error sending file");
+    //         return false;
+    //     }
+    //     ssize_t bytesSent = send(socket, buffer, bytesRead, 0);
+    //     if(bytesSent == -1) {
+    //         perror("Error while sending file");
+    //         return false;
+    //     }
+    //     totalSent += bytesSent;
+    //     remainingBytes -= bytesSent;
+    // }
+    // if(totalSent != file_size) {
+    //     fprintf(stderr, "Error: Sent %lld bytes of %lld expected\n", totalSent,file_size);
+    //     return false;
+    // }   
     
     // if(remove(PATH_COMPRESS) != 0) {
     //     perror("Error al eliminar el archivo");
