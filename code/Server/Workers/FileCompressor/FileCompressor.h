@@ -206,12 +206,38 @@ bool compress(int* codes, int socket) {
     fclose(fileW);
     fclose(fileR);
     
+    FILE * fileL = fopen(PATH_COMPRESS,"rb");
+    if(fileL == NULL){
+        perror("Error al abrir el archivo compreso");
+        return false;
+    }
+    
+    fseek(fileL, 0, SEEK_END);
+    ll sizeFile = ftell(fileL);
+    if (sizeFile < 0) {
+        perror("Error al calcular el tamaño del archivo: archivo vacio");
+        fclose(fileL);
+        return false;
+    }
+    
+    if(send(socket, &sizeFile,sizeof(sizeFile), 0) < 0){
+        perror("Error al enviar el tamano del compreso");
+        fclose(fileL);
+        return false;
+    }
+    printf("Send bytes %lld",sizeFile);
+    fclose(fileL);
+
     // if(remove(OUTPUT_FILE) != 0) {
     //     perror("Error al eliminar el archivo");
     //     return false;
     // }
     
     return true;
+
+    
+
+
 }
 #endif
 
