@@ -22,14 +22,14 @@ void* sendRoutes(void* arg) {
     }
     // unlock(&dto_mutex);
     ll partSize;
-    if(recv(socket, partSize, sizeof(partSize), 0)==-1){
+    if(recv(socket, &partSize, sizeof(partSize), 0)==-1){
        perror("Error receiving the compressed part");
         *exitCode=-1;
         exit_t(exitCode);
         close(socket);
         return exitCode;
     }
-    
+    printf("Bytes received of compressed part %ll", partSize);
     close(socket);
     *exitCode = 0;
     return exitCode;

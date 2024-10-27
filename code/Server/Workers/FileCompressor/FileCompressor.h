@@ -71,34 +71,35 @@ bool compress(int* codes, int socket) {
         perror("Error al enviar el size");
         return false;
     }
-    ll remainingBytes = file_size;
-    ll totalSent = 0;
-    while(remainingBytes > 0){
-        size_t bytesToRead = (remainingBytes < BUFFER_SIZE) ? remainingBytes : BUFFER_SIZE;
-        size_t bytesRead = fread(buffer, 1, bytesToRead, fileW);
+    printf("Bytes send of compressed part %ll", file_size);
+    // ll remainingBytes = file_size;
+    // ll totalSent = 0;
+    // while(remainingBytes > 0){
+    //     size_t bytesToRead = (remainingBytes < BUFFER_SIZE) ? remainingBytes : BUFFER_SIZE;
+    //     size_t bytesRead = fread(buffer, 1, bytesToRead, fileW);
         
-        if(bytesRead <= 0) {
-            if(feof(fileW)) break;  
-            perror("Error sending file");
-            return false;
-        }
-        ssize_t bytesSent = send(socket, buffer, bytesRead, 0);
-        if(bytesSent == -1) {
-            perror("Error while sending file");
-            return false;
-        }
-        totalSent += bytesSent;
-        remainingBytes -= bytesSent;
-    }
-    if(totalSent != file_size) {
-        fprintf(stderr, "Error: Sent %lld bytes of %lld expected\n", totalSent,file_size);
-        return false;
-    }   
+    //     if(bytesRead <= 0) {
+    //         if(feof(fileW)) break;  
+    //         perror("Error sending file");
+    //         return false;
+    //     }
+    //     ssize_t bytesSent = send(socket, buffer, bytesRead, 0);
+    //     if(bytesSent == -1) {
+    //         perror("Error while sending file");
+    //         return false;
+    //     }
+    //     totalSent += bytesSent;
+    //     remainingBytes -= bytesSent;
+    // }
+    // if(totalSent != file_size) {
+    //     fprintf(stderr, "Error: Sent %lld bytes of %lld expected\n", totalSent,file_size);
+    //     return false;
+    // }   
     
-    if(remove(PATH_COMPRESS) != 0) {
-        perror("Error al eliminar el archivo");
-        return false;
-    }
+    // if(remove(PATH_COMPRESS) != 0) {
+    //     perror("Error al eliminar el archivo");
+    //     return false;
+    // }
     return true;
 }
 
