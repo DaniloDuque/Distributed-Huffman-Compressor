@@ -20,30 +20,28 @@ bool compress(int* codes, int socket) {
         return false;
     }
     size_t bytesRead;
-    char buffer[BUFFER_SIZE];
-    char cbuffer[BUFFER_SIZE];
-    ll compressPos;
-    while((bytesRead = fread(buffer, sizeof(char), BUFFER_SIZE, fileR)) > 0){
+    uchar buffer[BUFFER_SIZE];
+    uchar cbuffer[BUFFER_SIZE];
+    size_t compressPos;
+    while(bytesRead = fread(buffer, sizeof(char), BUFFER_SIZE, fileR)){
         compressPos=0;
         for(int i = 0; i < bytesRead; i++){
-            int ascii=buffer[i];
+            unsigned int ascii = (unsigned int) buffer[i];
             for(int i=0; i<codes[2*ascii]; i++){
-                if(TEST(codes[2*ascii+1], i)) SET(byte, bit--), printf("1");
-                else printf("0"); 
+                if(TEST(codes[2*ascii+1], i)) SET(byte, bit);
+                bit--;
                 if(bit==-1){
-                    cbuffer[compressPos++]=byte;
+                    cbuffer[compressPos]=byte;
                     byte=0;
-                    //compressPos++; //si no sirve ni modo
+                    compressPos++;
                     bit=7;
                 }
             }
         }
         fwrite(cbuffer, 1, compressPos, fileW);
     }
-    printf("\n");
     cbuffer[0]=byte;
     cbuffer[1]=(bit+1)%8;
-    //printf("%d %d\n", byte, (bit+1)%8);
     fwrite(cbuffer, 1, 2, fileW);
     fclose(fileW);
     fclose(fileR);

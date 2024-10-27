@@ -14,6 +14,7 @@ void* sendRoutes(void* arg) {
         exit_t(exitCode);
         return NULL;
     }
+    
     close(socket);
     // ll partSize;
     // if(recv(socket, &partSize, sizeof(file_size), 0)==-1){
