@@ -62,7 +62,7 @@ char* toString(route* r, int asc){
     }
     st[pos]='-';
     st = mskToString(pos+1, r->msk, r->len, st);
-    st[digits+1+r->len]='/';
+    st[pos+1+r->len]='/';
     st[digits+2+r->len]='\0';
     return st;
 }
