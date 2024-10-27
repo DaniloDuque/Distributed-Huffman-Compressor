@@ -44,9 +44,9 @@ bool receiveAndUpdateTable(int socket){
         perror("Error receiving the table");
         return false;
     }
-    perror("Table received");
+    fprintf(stderr, "Table received");
     updateTable(table);
-    perror("Table updated");
+    fprintf(stderr,"Table updated");
     return true;
 }   
 
