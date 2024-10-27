@@ -30,14 +30,12 @@ bool compress(int* codes, int socket) {
         compressPos = 0;
         for(int i = 0; i < bytesRead && compressPos < BUFFER_SIZE; i++) {
             unsigned int ascii = (unsigned int)buffer[i];
-            if (ascii >= MAX_SIZE) continue;
             for(int j = 0; j < codes[2*ascii] && compressPos < BUFFER_SIZE; j++) {
                 if(TEST(codes[2*ascii+1], j)) SET(byte, bit);
                 bit--;
                 if(bit == -1) {
-                    cbuffer[compressPos] = byte;
+                    cbuffer[compressPos++] = byte;
                     byte = 0;
-                    compressPos++;
                     bit = 7;
                 }
             }
@@ -97,10 +95,10 @@ bool compress(int* codes, int socket) {
         return false;
     }   
     
-    if(remove(PATH_COMPRESS) != 0) {
-        perror("Error al eliminar el archivo");
-        return false;
-    }
+    // if(remove(PATH_COMPRESS) != 0) {
+    //     perror("Error al eliminar el archivo");
+    //     return false;
+    // }
     return true;
 }
 

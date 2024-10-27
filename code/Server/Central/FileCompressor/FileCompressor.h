@@ -46,11 +46,17 @@ void* sendRoutes(void* arg) {
         fwrite(buffer, 1, bytes_received, filePart);
         total_received += bytes_received;
     }
+    if(total_received!=partSize){
+        perror("bytes no coinciden");
+        *exitCode=-1;
+        exit_t(exitCode);
+        close(info->socket);
+        return NULL;
+    }
     fclose(filePart);
     close(info->socket);
     *exitCode = 0;
     exit_t(exitCode);
-    perror("LISTO");
 }
 
 bool compressFile(int n, client_info* clients) {
@@ -74,7 +80,9 @@ bool compressFile(int n, client_info* clients) {
         }
     }
     free(exitCode);
-    return flag;
+    if(flag == false) return false;
+    return true;
+
 }
 
 #endif
