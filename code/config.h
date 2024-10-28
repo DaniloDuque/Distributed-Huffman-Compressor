@@ -1,11 +1,13 @@
 #ifndef CONFIG_HEADER
 #define CONFIG_HEADER
 
-#define PATH_FOR_COMPRESS "/Compressor/Server/Central/resources/saved/compressedFile.huff"
-#define PATH_FOR_DESCOMPRESS "prueba"
-#define PATH_FOR_TABLE "/Compressor/Server/Central/resources/saved/huffman.table"
-#define FILE_PATH "/Compressor/Server/Central/resources/agapimu.mp3"
+#define PATH_FOR_COMPRESS "./resources/saved/compressedFile.huff"
+#define PATH_FOR_TABLE "./resources/saved/huffman.table"
+#define FILE_PATH "./resources/test.txt"
+
+#define COMPRESSED_FILE "../Compressor/Server/Central/resources/saved/compressedFile.huff"
+#define PATH_FOR_DESCOMPRESS "./test"
+#define DESCOMPRESS_TABLE "../Compressor/Server/Central/resources/saved/huffman.table"
 #define IP "2.tcp.ngrok.io"                            
 #define NGROK_PORT 12175
-
 #endif
