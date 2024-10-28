@@ -33,7 +33,7 @@ void* sendRoutes(void* arg) {
     }
     fprintf(stderr, "Size of expected compressed part %lld\n", sizeFile);
 
-    char ruta[25];  
+    char ruta[29];  
     if (snprintf(ruta, sizeof(ruta), "%s%d", SAVED_FILE_ROUTE, info->index) >= sizeof(ruta)) {
         fprintf(stderr, "Error: Nombre de archivo demasiado largo\n");
         close(socket);

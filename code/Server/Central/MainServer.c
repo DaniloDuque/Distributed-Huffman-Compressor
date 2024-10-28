@@ -71,24 +71,71 @@ int main() {
         perror("Error al crear los hilos desde main para comprimir");
         return 1;
     }
-
-    // FILE * fileC = fopen(PATH_FOR_COMPRESS,"wb");
-    // for(int i = 0; i < n; i++){
-    //     char ruta[25];
-    //     sprintf(ruta,"%s%d",SAVED_FILE_ROUTE,i);
-    //     FILE * file = fopen(ruta,"rb");
-        
-    //     char buffer[BUFFER_SIZE];
-    //     size_t bytes_read;
     
-    //     while ((bytes_read = fread(buffer, 1, BUFFER_SIZE, file)) > 0) {
-    //         fwrite(buffer, 1, bytes_read, fileC);
-    //     }
+    //  New area
 
-    //     fclose(file);
-    // }
-    // fclose(PATH_FOR_COMPRESS);
-    // printf("Se comprimio el archivo con exito\n");
+    FILE * fileC = fopen(PATH_FOR_COMPRESS,"wb");
+    uchar byte=0;
+    int bit=7;
+    char buffer[BUFFER_SIZE];
+    char cbuffer[BUFFER_SIZE];
+    for(int i = 0; i < n; i++){
+        char ruta[29];
+        if(snprintf(ruta,sizeof(ruta),"%s%d",SAVED_FILE_ROUTE,i) >= sizeof(ruta)){
+            printf("Error al calcular la ruta de %d\n",i);
+            return 1;
+        }
+        FILE * file = fopen(ruta,"rb");
+        
+        size_t bytes_read;
+    
+        fseek(file, 0, SEEK_END);
+        ll file_size = ftell(file) - 2;
+        fseek(file, 0, SEEK_SET);        
+        
+        ll pos;
+        while (file_size > 0) {
+            pos=0;
+            size_t bytes_to_read = (file_size < BUFFER_SIZE) ? file_size : BUFFER_SIZE;
+            bytes_read = fread(buffer, 1, bytes_to_read, file);
+            for(ll i2=0; i2<bytes_read; i2++){
+                for(int bt=7; bt>=0; bt--){
+                    byte|=((buffer[i2]&(1<<bt))<<bit);
+                    bit--;
+                    if(bit==-1) cbuffer[pos++]=byte, byte=0, bit=7;
+                }
+            }
+            fwrite(cbuffer, 1, pos, fileC);
+            file_size -= bytes_read;
+        }
+
+        fseek(file,-2,SEEK_END);
+        uchar ceros, cantCeros;
+        fread(&ceros,sizeof(uchar),1,file); 
+        fread(&cantCeros,sizeof(uchar),1,file);
+
+        for(int j = 7; cantCeros; j--, cantCeros--){
+            byte |= (1 << bit) & (ceros&(1<<j));
+            bit--;
+            if(bit == -1){
+                fwrite(&byte,1,1,fileC);
+                byte=0;
+                bit = 7;
+            }
+        }
+
+        fclose(file);
+
+        if(remove(ruta) != 0){
+            fprintf(stderr,"Error al borrar el archivo %d\n",i);
+        }
+    }
+    buffer[0]=byte;
+    buffer[1]=(bit+1)%8;
+    fwrite(buffer, 1, 2, fileC);
+    
+    fclose(fileC);
+    printf("Se comprimio el archivo con exito\n");
     close(server_socket);
     return 0;
 }
