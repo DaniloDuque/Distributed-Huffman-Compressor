@@ -133,9 +133,26 @@ int main() {
     buffer[0]=byte;
     buffer[1]=(bit+1)%8;
     fwrite(buffer, 1, 2, fileC);
-    
     fclose(fileC);
+
+    fileC = fopen(PATH_FOR_COMPRESS,"rb");
+    unsigned char byte;  // Variable para almacenar cada byte
+    while (fread(&byte, sizeof(unsigned char), 1, fileC) == 1) {
+        printf("%d ", byte);  // Imprime el valor decimal del byte
+    }
+    fclose(fileC);
+
     printf("Se comprimio el archivo con exito\n");
+
+    FILE* fileDef = fopen(PATH_FOR_TABLE,"wb");
+    if(fileDef == NULL){
+        perror("Error al guardar la tabla de códigos ");
+        return 1;
+    }
+    for(int c = 0, j; c < 2*MAX_SIZE; c+=2, j++) {
+        fprintf(fileDef, "%d %d\n", dto[c], (int)dto[c+1]);
+    }
+    fclose(fileDef);
     close(server_socket);
     return 0;
 }

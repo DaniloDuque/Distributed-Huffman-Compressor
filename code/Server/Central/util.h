@@ -23,6 +23,7 @@
 #define SAVED_FILE_ROUTE "./resources/saved/"
 #define MAX_CLIENT 100
 #define PATH_FOR_COMPRESS "./resources/saved/compress.huff"
+#define PATH_FOR_TABLE "./resources/"
 
 #define create pthread_create
 #define join pthread_join
