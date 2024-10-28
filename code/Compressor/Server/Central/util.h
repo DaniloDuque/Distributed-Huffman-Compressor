@@ -15,7 +15,7 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include "../../Huffman/Tree.h"
-#include "config.h"
+#include "../../../config.h"
 
 #define PORT 8585
 #define BUFFER_SIZE (1<<14)

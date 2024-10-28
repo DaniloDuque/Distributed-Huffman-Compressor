@@ -10,7 +10,7 @@
 #include <netdb.h>
 #include <errno.h>
 #include <stdbool.h>
-#include "../Central/config.h"
+#include "../../../config.h"
 
 #define BUFFER_SIZE (1<<14)
 #define OUTPUT_FILE "received_file_part"
