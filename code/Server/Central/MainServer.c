@@ -71,6 +71,24 @@ int main() {
         perror("Error al crear los hilos desde main para comprimir");
         return 1;
     }
+
+    // FILE * fileC = fopen(PATH_FOR_COMPRESS,"wb");
+    // for(int i = 0; i < n; i++){
+    //     char ruta[25];
+    //     sprintf(ruta,"%s%d",SAVED_FILE_ROUTE,i);
+    //     FILE * file = fopen(ruta,"rb");
+        
+    //     char buffer[BUFFER_SIZE];
+    //     size_t bytes_read;
+    
+    //     while ((bytes_read = fread(buffer, 1, BUFFER_SIZE, file)) > 0) {
+    //         fwrite(buffer, 1, bytes_read, fileC);
+    //     }
+
+    //     fclose(file);
+    // }
+    // fclose(PATH_FOR_COMPRESS);
+    // printf("Se comprimio el archivo con exito\n");
     close(server_socket);
     return 0;
 }

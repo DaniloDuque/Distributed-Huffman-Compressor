@@ -48,8 +48,12 @@ int main() {
         perror("Error compressing the file");
         return 1;
     }
+
     int ack;
-    recv(server_socket,&ack,sizeof(ack),0);
+    printf("Voy a recibir el ack\n");
+
+    int p = recv(server_socket,&ack,sizeof(ack),0);
+    printf("El ack recibido fue: %d\n", p);
     close(server_socket);
     return 0;
 }
