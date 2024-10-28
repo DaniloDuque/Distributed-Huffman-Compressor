@@ -18,12 +18,12 @@
 
 #define PORT 8585
 #define BUFFER_SIZE (1<<14)
-#define FILE_PATH "./resources/JetBrainsMono.zip"
+#define FILE_PATH "./resources/test.txt"
 #define MAX_SIZE (1<<8)
 #define SAVED_FILE_ROUTE "./resources/saved/"
 #define MAX_CLIENT 100
 #define PATH_FOR_COMPRESS "./resources/saved/compress.huff"
-#define PATH_FOR_TABLE "./resources/"
+#define PATH_FOR_TABLE "./resources/saved/compress.table"
 
 #define create pthread_create
 #define join pthread_join

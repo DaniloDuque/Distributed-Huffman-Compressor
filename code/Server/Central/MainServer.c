@@ -77,8 +77,8 @@ int main() {
     FILE * fileC = fopen(PATH_FOR_COMPRESS,"wb");
     uchar byte=0;
     int bit=7;
-    char buffer[BUFFER_SIZE];
-    char cbuffer[BUFFER_SIZE];
+    uchar buffer[BUFFER_SIZE];
+    uchar cbuffer[BUFFER_SIZE];
     for(int i = 0; i < n; i++){
         char ruta[29];
         if(snprintf(ruta,sizeof(ruta),"%s%d",SAVED_FILE_ROUTE,i) >= sizeof(ruta)){
@@ -98,22 +98,22 @@ int main() {
             pos=0;
             size_t bytes_to_read = (file_size < BUFFER_SIZE) ? file_size : BUFFER_SIZE;
             bytes_read = fread(buffer, 1, bytes_to_read, file);
-            for(ll i2=0; i2<bytes_read; i2++){
+            for(ll k=0; k<bytes_read; k++){
                 for(int bt=7; bt>=0; bt--){
-                    byte|=((buffer[i2]&(1<<bt))<<bit);
+                    byte|=(buffer[k]&(1<<bt)) & (1<<bit);
                     bit--;
-                    if(bit==-1) cbuffer[pos++]=byte, byte=0, bit=7;
+                    if(bit==-1){
+                        cbuffer[pos++]=byte, byte=0, bit=7;
+                    }
                 }
             }
             fwrite(cbuffer, 1, pos, fileC);
             file_size -= bytes_read;
         }
-
         fseek(file,-2,SEEK_END);
         uchar ceros, cantCeros;
         fread(&ceros,sizeof(uchar),1,file); 
         fread(&cantCeros,sizeof(uchar),1,file);
-
         for(int j = 7; cantCeros; j--, cantCeros--){
             byte |= (1 << bit) & (ceros&(1<<j));
             bit--;
@@ -133,13 +133,6 @@ int main() {
     buffer[0]=byte;
     buffer[1]=(bit+1)%8;
     fwrite(buffer, 1, 2, fileC);
-    fclose(fileC);
-
-    fileC = fopen(PATH_FOR_COMPRESS,"rb");
-    unsigned char byte;  // Variable para almacenar cada byte
-    while (fread(&byte, sizeof(unsigned char), 1, fileC) == 1) {
-        printf("%d ", byte);  // Imprime el valor decimal del byte
-    }
     fclose(fileC);
 
     printf("Se comprimio el archivo con exito\n");

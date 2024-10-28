@@ -69,7 +69,7 @@ bool sendCompress(int socket) {
 bool compress(int* codes, int socket) {
     if (!codes) return false;
     //printf("Size of table of codes %lld\n")
-    int byte = 0;
+    uchar byte = 0;
     int bit = 7;
     FILE* fileR = fopen(OUTPUT_FILE, "rb");    
     if(fileR == NULL) {
@@ -91,10 +91,10 @@ bool compress(int* codes, int socket) {
     
     while((bytesRead = fread(buffer, sizeof(char), BUFFER_SIZE, fileR)) > 0) {
         compressPos = 0;
-        for(int i = 0; i < bytesRead && compressPos < BUFFER_SIZE; i++) {
+        for(int i = 0; i < bytesRead; i++) {
             unsigned int ascii = (unsigned int)buffer[i];
             if (ascii >= MAX_SIZE) continue;
-            for(int j = 0; j < codes[2*ascii] && compressPos < BUFFER_SIZE; j++) {
+            for(int j =0; j<codes[2*ascii]; j++) {
                 if(TEST(codes[2*ascii+1], j)) SET(byte, bit);
                 bit--;
                 if(bit == -1) {
@@ -109,7 +109,6 @@ bool compress(int* codes, int socket) {
             fwrite(cbuffer, 1, compressPos, fileW);
         }
     }
-    
     cbuffer[0] = byte;
     cbuffer[1] = (bit+1)%8;
     fwrite(cbuffer, 1, 2, fileW);
