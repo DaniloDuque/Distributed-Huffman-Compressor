@@ -27,15 +27,15 @@ void* sendRoutes(void* arg) {
     ll sizeFile;
     ssize_t recv_size = recv(socket, &sizeFile, sizeof(sizeFile), MSG_WAITALL);
     if(recv_size != sizeof(sizeFile)) {
-        perror("Error al recibir el tamaño");
+        perror("Error receiving the file size");
         close(socket);
         exit_t(exitCode);
     }
-    fprintf(stderr, "Size of expected compressed part %lld\n", sizeFile);
+    fprintf(stderr, "Size of expected compressed part: %lld\n", sizeFile);
 
     char ruta[29];  
     if (snprintf(ruta, sizeof(ruta), "%s%d", SAVED_FILE_ROUTE, info->index) >= sizeof(ruta)) {
-        fprintf(stderr, "Error: Nombre de archivo demasiado largo\n");
+        fprintf(stderr, "Error: File name too long\n");
         close(socket);
         exit_t(exitCode);
     }

@@ -3,7 +3,7 @@
 int main(int argc, char const *argv[]) {
     FILE* huffman_table = fopen(DESCOMPRESS_TABLE, "rb");
     if (huffman_table == NULL) {
-        perror("Error opening the huffman table file");
+        perror("Error opening the Huffman table file");
         return 1;
     }
 
@@ -12,13 +12,13 @@ int main(int argc, char const *argv[]) {
     for (int i = 0; i < 256; i++) {
         fscanf(huffman_table, "%d %d\n", &lenTable[i], &pathTable[i]);
         if (lenTable[i]) {
-            if(pathTable[i]>mayor) mayor=pathTable[i];
+            if(pathTable[i] > mayor) mayor = pathTable[i];
             insert(0, lenTable[i], pathTable[i], i, root);
         }
     }
     //displayTree(root, "", 0);
     fclose(huffman_table);
-    printf("Ruta mayor %lld\n", mayor);
+    printf("Largest path %lld\n", mayor);
 
     FILE* fileRead = fopen(COMPRESSED_FILE, "rb");
     if (fileRead == NULL) {
@@ -41,8 +41,8 @@ int main(int argc, char const *argv[]) {
     node* path = root;
     uchar buffer[BUFFER_SIZE];
     uchar wbuffer[BUFFER_SIZE];
-    if(file_size<0){
-        perror("Error en el tamaño del archivo por descomprimir");
+    if (file_size < 0) {
+        perror("Error in the size of the file to decompress");
         fclose(fileRead);
         fclose(fileWrite);
         return 1;
@@ -89,7 +89,6 @@ int main(int argc, char const *argv[]) {
                     path = path->left;
                 }
 
-
                 if (path->left == NULL && path->right == NULL) {
                     wbuffer[pos] = path->sym;
                     path = root; 
@@ -108,7 +107,7 @@ int main(int argc, char const *argv[]) {
     fread(&totalPadding, sizeof(uchar), 1, fileRead);
     fclose(fileRead);
 
-    pos=0;
+    pos = 0;
     for (int j = 7; j >= 0 && totalPadding; j--, totalPadding--) {
         if (path == NULL) {
             perror("Path node is null in padding");
@@ -130,18 +129,18 @@ int main(int argc, char const *argv[]) {
             }
             path = path->left;
         }
-        if(path->left==NULL && path->right==NULL){
-            wbuffer[pos]=path->sym;
+        if (path->left == NULL && path->right == NULL) {
+            wbuffer[pos] = path->sym;
             pos++;
-            path=root;
+            path = root;
         }
     }
-    if(path!=root){
+    if (path != root) {
         perror("Error inconsistent file");
         fclose(fileWrite);
         return 1;
     }
-    if(pos) fwrite(wbuffer, 1, pos, fileWrite);
+    if (pos) fwrite(wbuffer, 1, pos, fileWrite);
 
     fclose(fileWrite);
     printf("File decompressed successfully\n");

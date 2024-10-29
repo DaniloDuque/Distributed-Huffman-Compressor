@@ -50,28 +50,6 @@ char* mskToString(int start, int msk, int len, char * r){
     return r;
 }
 
-/*
-//ascii-route/
-char* toString(route* r, int asc){
-    int digits = log10(asc);
-    char * st = (char*)calloc(digits+ 4 + r->len, sizeof(char));
-    char dig[digits+1];
-    int pos=0;
-    while(asc){
-        dig[pos]=asc%10;
-        asc/=10;
-        pos++;
-    }
-    pos=0;
-    for(int i=digits; i>=0; i--, pos++) st[pos]=dig[i];
-    st[pos]='-';
-    st = mskToString(pos+1, r->msk, r->len, st);
-    st[pos+1+r->len]='/';
-    st[digits+2+r->len]='\0';
-    return st;
-}
-*/
-
 void RecRoutes(node* root, int lvl, route r, route** routes) {
     if (!root) return;
     if (!root->lft && !root->rght) {
