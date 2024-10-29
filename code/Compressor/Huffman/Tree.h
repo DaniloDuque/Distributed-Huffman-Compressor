@@ -29,7 +29,7 @@ void displayTree(node* root, char* prefix, bool islft) {
 }
 
 typedef struct {
-    uchar len, msk;
+    int len, msk;
 } route;
 
 void displayRoute(route* r, uchar c){
@@ -75,7 +75,7 @@ char* toString(route* r, int asc){
 void RecRoutes(node* root, int lvl, route r, route** routes) {
     if (!root) return;
     if (!root->lft && !root->rght) {
-        routes[root->data] = newRoute(r.len, r.msk); 
+        routes[root->data] = newRoute(r.len, r.msk);
         printf("altura de esta hoja: %d\n", lvl);
         return;
     }

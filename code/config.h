@@ -3,7 +3,7 @@
 
 #define PATH_FOR_COMPRESS "./resources/saved/compressedFile.huff"
 #define PATH_FOR_TABLE "./resources/saved/huffman.table"
-#define FILE_PATH "./resources/simple.txt"
+#define FILE_PATH "./resources/Data-Structures.zip"
 
 #define COMPRESSED_FILE "../Compressor/Server/Central/resources/saved/compressedFile.huff"
 #define PATH_FOR_DESCOMPRESS "../Compressor/Server/Central/resources/test"

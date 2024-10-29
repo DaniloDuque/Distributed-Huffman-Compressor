@@ -17,7 +17,7 @@ bool calc_frequency(int socket){
             freq[(uchar)buffer[i]]++;
         }
     }
-
+    fclose(file);
     if(send(socket, (char*)freq, MAX_SIZE*sizeof(ll), 0) < 0){
         perror("Error enviando la frecuencia");
         return false;

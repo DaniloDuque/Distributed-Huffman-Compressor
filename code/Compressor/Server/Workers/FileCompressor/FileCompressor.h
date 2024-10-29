@@ -68,7 +68,7 @@ bool sendCompress(int socket) {
 
 bool compress(int* codes, int socket) {
     if (!codes) return false;
-    //printf("Size of table of codes %lld\n")
+    printf("Going to compress\n");
     int byte = 0;
     int bit = 7;
     FILE* fileR = fopen(OUTPUT_FILE, "rb");    
@@ -93,7 +93,7 @@ bool compress(int* codes, int socket) {
         compressPos = 0;
         for(int i = 0; i < bytesRead; i++) {
             unsigned int ascii = (unsigned int)buffer[i];
-            //printf("Asc %c Tam: %d Msk: %d\n", buffer[i], codes[2*ascii], codes[2*ascii+1]);
+            //printf("Tam: %d Msk: %d\n", codes[2*ascii], codes[2*ascii+1]);
             if (ascii >= MAX_SIZE) printf("ups\n");
             for(int j =0; j<codes[2*ascii]; j++) {
             //for(int j=codes[2*ascii]-1; j>=0; j--){
