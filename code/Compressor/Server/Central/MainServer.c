@@ -75,7 +75,7 @@ int main() {
     //  New area
 
     FILE * fileC = fopen(PATH_FOR_COMPRESS,"wb");
-    uchar byte=0;
+    int byte=0;
     int bit=7;
     uchar buffer[BUFFER_SIZE];
     uchar cbuffer[BUFFER_SIZE];
@@ -92,7 +92,7 @@ int main() {
         fseek(file, 0, SEEK_END);
         ll file_size = ftell(file) - 2;
         fseek(file, 0, SEEK_SET);        
-        
+        printf("File compress size %lld\n", file_size+2);
         ll pos;
         while (file_size > 0) {
             pos=0;
@@ -100,10 +100,13 @@ int main() {
             bytes_read = fread(buffer, 1, bytes_to_read, file);
             for(ll k=0; k<bytes_read; k++){
                 for(int bt=7; bt>=0; bt--){
-                    byte|=(buffer[k]&(1<<bt)) & (1<<bit);
+                    //byte|=(buffer[k]&(1<<bt)) & (1<<bit);
+                    if(TEST(buffer[k], bt)) byte|=(1<<bit);
                     bit--;
                     if(bit==-1){
-                        cbuffer[pos++]=byte, byte=0, bit=7;
+                        cbuffer[pos++]=byte;
+                        byte=0;
+                        bit=7;
                     }
                 }
             }
@@ -114,8 +117,10 @@ int main() {
         uchar ceros, cantCeros;
         fread(&ceros,sizeof(uchar),1,file); 
         fread(&cantCeros,sizeof(uchar),1,file);
-        for(int j = 7; cantCeros; j--, cantCeros--){
-            byte |= (1 << bit) & (ceros&(1<<j));
+        printf("Bits: %d Total: %d for file %d\n", ceros, cantCeros, i);
+        for(int j = 7; j>=0 && cantCeros; j--, cantCeros--){
+            //byte |= (1 << bit) & (ceros&(1<<j));
+            if(TEST(ceros, j)) byte|=(1<<bit);
             bit--;
             if(bit == -1){
                 fwrite(&byte,1,1,fileC);
@@ -131,9 +136,15 @@ int main() {
         }
     }
     buffer[0]=byte;
-    buffer[1]=(bit+1)%8;
+    buffer[1]=7-bit;
+    printf("Final byte: %d total: %d\n", buffer[0], buffer[1]);
     fwrite(buffer, 1, 2, fileC);
+
+    fseek(fileC, 0, SEEK_END);
+    ll file_size = ftell(fileC);
+    fseek(fileC, 0, SEEK_SET); 
     fclose(fileC);
+    printf("Written compressed file size %lld\n", file_size);
 
     printf("Se comprimio el archivo con exito\n");
 
