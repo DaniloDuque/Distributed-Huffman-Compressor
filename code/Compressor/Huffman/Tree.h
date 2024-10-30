@@ -54,7 +54,6 @@ void RecRoutes(node* root, int lvl, route r, route** routes) {
     if (!root) return;
     if (!root->lft && !root->rght) {
         routes[root->data] = newRoute(r.len, r.msk);
-        printf("altura de esta hoja: %d\n", lvl);
         return;
     }
     route lftRoute = {lvl+1, r.msk}, rghtRoute = {lvl+1, SET(r.msk, lvl)};  
