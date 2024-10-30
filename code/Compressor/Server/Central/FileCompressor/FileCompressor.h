@@ -33,15 +33,15 @@ void* sendRoutes(void* arg) {
     }
     fprintf(stderr, "Size of expected compressed part: %lld\n", sizeFile);
 
-    char ruta[29];  
-    if (snprintf(ruta, sizeof(ruta), "%s%d", SAVED_FILE_ROUTE, info->index) >= sizeof(ruta)) {
+    char route[29];  
+    if (snprintf(route, sizeof(route), "%s%d", SAVED_FILE_ROUTE, info->index) >= sizeof(route)) {
         fprintf(stderr, "Error: File name too long\n");
         close(socket);
         exit_t(exitCode);
     }
-    fprintf(stderr, "Writing to file: %s\n", ruta);
+    fprintf(stderr, "Writing to file: %s\n", route);
 
-    FILE* file = fopen(ruta, "wb");
+    FILE* file = fopen(route, "wb");
     if(file == NULL) {
         perror("Error creating the compressed file");
         close(socket);
@@ -88,7 +88,7 @@ void* sendRoutes(void* arg) {
         *exitCode = -1;
         exit_t(exitCode);
     }
-    printf("File received and saved as %s\n", ruta);
+    printf("File received and saved as %s\n", route);
     fclose(file);
     int ack;
     send(socket, &ack, sizeof(ack), 0);

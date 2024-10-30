@@ -8,17 +8,17 @@ int main(int argc, char const *argv[]) {
     }
 
     node* root = createNode('\0');
-    ll mayor=0;
+    ll greatest=0;
     for (int i = 0; i < 256; i++) {
         fscanf(huffman_table, "%d %d\n", &lenTable[i], &pathTable[i]);
         if (lenTable[i]) {
-            if(pathTable[i] > mayor) mayor = pathTable[i];
+            if(pathTable[i] > greatest) greatest = pathTable[i];
             insert(0, lenTable[i], pathTable[i], i, root);
         }
     }
     //displayTree(root, "", 0);
     fclose(huffman_table);
-    printf("Largest path %lld\n", mayor);
+    printf("Largest path %lld\n", greatest);
 
     FILE* fileRead = fopen(COMPRESSED_FILE, "rb");
     if (fileRead == NULL) {
