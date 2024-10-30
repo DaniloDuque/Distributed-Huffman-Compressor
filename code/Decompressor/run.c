@@ -1,6 +1,6 @@
 #include "util.h"
 
-int main(int argc, char const *argv[]) {
+int main() {
     FILE* huffman_table = fopen(DESCOMPRESS_TABLE, "rb");
     if (huffman_table == NULL) {
         perror("Error opening the Huffman table file");
@@ -60,7 +60,7 @@ int main(int argc, char const *argv[]) {
         size_t bytes_to_read = (file_size < BUFFER_SIZE) ? file_size : BUFFER_SIZE;
         size_t bytes_read = fread(buffer, 1, bytes_to_read, fileRead);
 
-        for (ll i = 0; i < bytes_read; i++) {
+        for (ll i = 0; i < (ll)bytes_read; i++) {
             uchar byteRead = buffer[i];
             for (int j = 7; j >= 0; j--) {
 
