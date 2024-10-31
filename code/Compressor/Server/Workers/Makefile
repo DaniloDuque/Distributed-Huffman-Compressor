@@ -8,7 +8,7 @@ CFLAGS = -Wall -pthread
 OUTPUT = a.out
 
 # Source file
-SRC = run.c
+SRC = RunWorker.c
 
 # Default rule (build everything)
 all: $(OUTPUT)

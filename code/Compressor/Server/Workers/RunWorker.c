@@ -4,7 +4,6 @@
 int main() {
     int server_socket;
     struct sockaddr_in server_addr;
-    socklen_t client_len = sizeof(struct sockaddr_in);
 
     server_socket = socket(AF_INET, SOCK_STREAM, 0);
     if (server_socket == -1) {
